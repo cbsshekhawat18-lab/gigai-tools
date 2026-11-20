@@ -8,26 +8,26 @@
     "build": "esbuild worker.mjs --bundle --platform=node --format=esm --target=node22 --external:pg-native --external:sharp --external:svgo --external:@napi-rs/canvas --outfile=worker.bundle.mjs --banner:js=\"import { createRequire as __gigaiCR } from 'node:module'; const require = __gigaiCR(import.meta.url);\""
   },
   "dependencies": {
-    "@napi-rs/canvas": "^1.0.8",
+    "@napi-rs/canvas": "^1.1.1",
     "clean-css": "^5.3.3",
     "html-minifier-terser": "^7.2.0",
-    "js-yaml": "^5.4.1",
+    "js-yaml": "^5.5.0",
     "jsqr": "^1.4.0",
-    "linkedom": "^0.18.13",
-    "marked": "^18.0.11",
-    "papaparse": "^5.7.0",
+    "linkedom": "^0.18.15",
+    "marked": "^18.2.1",
+    "papaparse": "^5.7.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.6.205",
-    "pg": "^8.13.1",
+    "pg": "^8.23.1",
     "qrcode": "^1.5.4",
     "robots-parser": "^3.0.1",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "svgo": "^4.1.0",
     "terser": "^5.51.2",
-    "turndown": "^7.2.4"
+    "turndown": "^7.2.5"
   },
   "devDependencies": {
-    "@huggingface/transformers": "^4.2.0",
+    "@huggingface/transformers": "^4.3.2",
     "esbuild": "^0.28.2"
   }
 }
