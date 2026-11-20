@@ -104,12 +104,12 @@ export default function OpenSourcePage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Licence and name">
+      <LegalSection title="License and name">
         <p>
           The code is licensed under the <A href={repo("/blob/main/LICENSE")}>Apache License 2.0</A>:
           you may use, change and run it, including on your own site. One optional backend
           module, PDF repair, is AGPL-3.0 because of a library it uses. The {SITE.name} name and
-          logo are not covered by the licence, so a public copy uses its own;{" "}
+          logo are not covered by the license, so a public copy uses its own;{" "}
           <A href={repo("/blob/main/TRADEMARKS.md")}>TRADEMARKS.md</A> explains how.
         </p>
       </LegalSection>

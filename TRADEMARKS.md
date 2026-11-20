@@ -3,11 +3,11 @@
 The code in this repository is open source under the [Apache License 2.0](LICENSE)
 (and, for one folder, AGPL-3.0). The **GigAI** name, the **GigAI Tools** name and
 the GigAI logo are trademarks of Gigai Kripa Services. They are not licensed under
-either licence; Apache-2.0 section 6 says so explicitly.
+either license; Apache-2.0 section 6 says so explicitly.
 
 ## What you may do
 
-- Use, change and run the code, including on a public website, under its licence.
+- Use, change and run the code, including on a public website, under its license.
 - Say truthfully that your project is "based on GigAI Tools" or "a fork of GigAI Tools",
   with a link to this repository.
 - Use the name to refer to this project, for example in an article or a comparison.

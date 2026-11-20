@@ -63,4 +63,4 @@ docker build -t gigai-tools-web --build-arg NEXT_PUBLIC_SITE_URL=https://example
 
 - Use your own name and logo. [TRADEMARKS.md](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/TRADEMARKS.md) lists the files to change.
 - Set `ENV=production` and an exact `CORS_ORIGINS` on the backend.
-- If you enable PDF repair, read its [licence note](guides/pdf-repair.md#licence).
+- If you enable PDF repair, read its [license note](guides/pdf-repair.md#license).

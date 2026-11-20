@@ -2,6 +2,12 @@
 
 GigAI Tools runs at [gigai.tools](https://gigai.tools), which is deployed from `main`. Each tool also keeps its own dated changelog in its `config/tools/` entry, shown on its page.
 
+## Unreleased
+
+- **Header**: the navigation now stays in the layout at every width, so on screens 1280px and wider it no longer slides under the search box and the sign-in buttons.
+- **Brand files**: the logo mark has transparent corners, and `public/brand/` adds a horizontal logo for light and dark backgrounds.
+- **README**: a demo recording, a feature overview by category, where each tool runs, the tech stack and the project layout.
+
 ## 0.1.0 (2026-11-20)
 
 The first public release of the code behind gigai.tools.

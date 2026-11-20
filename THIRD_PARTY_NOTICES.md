@@ -1,18 +1,18 @@
 # Third-party notices
 
-GigAI Tools is licensed under the Apache License 2.0 (see [LICENSE](LICENSE)). It depends on open-source packages with their own licences. The full list of npm and Python dependencies is in `package-lock.json`, `worker/package-lock.json` and `backend/requirements*.txt`; most are MIT, Apache-2.0, ISC or BSD. This file lists the components whose licence asks for notice, or that are not under a permissive licence.
+GigAI Tools is licensed under the Apache License 2.0 (see [LICENSE](LICENSE)). It depends on open-source packages with their own licenses. The full list of npm and Python dependencies is in `package-lock.json`, `worker/package-lock.json` and `backend/requirements*.txt`; most are MIT, Apache-2.0, ISC or BSD. This file lists the components whose license asks for notice, or that are not under a permissive license.
 
 ## Shipped in this repository
 
-| Component | Where | Licence |
+| Component | Where | License |
 |---|---|---|
-| pdf.js character maps and standard fonts | `public/pdfjs/` | Apache-2.0; the fonts carry the Foxit and Liberation licences in `public/pdfjs/standard_fonts/` |
+| pdf.js character maps and standard fonts | `public/pdfjs/` | Apache-2.0; the fonts carry the Foxit and Liberation licenses in `public/pdfjs/standard_fonts/` |
 | indian-pii | `lib/vendor/indian-pii/` | MIT (`lib/vendor/indian-pii/LICENSE`) |
-| GNU AGPL-3.0 text | `backend/app/pdf_repair/LICENSE` | The licence of that folder |
+| GNU AGPL-3.0 text | `backend/app/pdf_repair/LICENSE` | The license of that folder |
 
 ## Installed by npm, not committed
 
-| Component | Version | Licence | Notes |
+| Component | Version | License | Notes |
 |---|---|---|---|
 | ffmpeg.wasm core (`@ffmpeg/core`) | 0.12.10 | GPL-2.0-or-later | Copied into `public/ffmpeg/` by `scripts/copy-ffmpeg.mjs` and served to the browser as a separate program. Source: <https://github.com/ffmpegwasm/ffmpeg.wasm> |
 | `@breezystack/lamejs` (MP3 encoder) | 1.2.7 | LGPL-3.0 | Bundled into the site's JavaScript. Its source is the npm package; this repository's source is public |
@@ -23,7 +23,7 @@ GigAI Tools is licensed under the Apache License 2.0 (see [LICENSE](LICENSE)). I
 
 ## Downloaded at run time, not shipped
 
-| Component | Used by | Licence |
+| Component | Used by | License |
 |---|---|---|
 | Whisper speech-to-text models (`Xenova/whisper-*`, from Hugging Face) | Video Intelligence, Video to Work | MIT |
 | `Xenova/all-MiniLM-L6-v2` embeddings | Video to Work context | Apache-2.0 |
@@ -31,7 +31,7 @@ GigAI Tools is licensed under the Apache License 2.0 (see [LICENSE](LICENSE)). I
 
 ## Optional backend components
 
-| Component | Used by | Licence |
+| Component | Used by | License |
 |---|---|---|
 | PyMuPDF | `backend/app/pdf_repair/` (off by default) | AGPL-3.0 |
 | tesseract OCR | `backend/app/pdf_repair/` | Apache-2.0 |

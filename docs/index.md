@@ -23,7 +23,7 @@ You do not need to install anything to use a tool. Open it on [gigai.tools](http
 - [The developer API](guides/developer-api.md): the `/v1` API with accounts, keys and jobs.
 - [The task worker](guides/worker.md): the process that runs developer API jobs.
 - [The fetch proxies](guides/fetch-proxies.md): how the tools that read a URL fetch it.
-- [PDF repair](guides/pdf-repair.md): the optional OCR service and its AGPL licence.
+- [PDF repair](guides/pdf-repair.md): the optional OCR service and its AGPL license.
 - [API clients](guides/clients.md): the Node, Python and MCP clients for the developer API.
 - [Self-hosting](self-hosting.md): everything on your own server, or with Docker.
 - [Configuration](configuration.md): every setting.

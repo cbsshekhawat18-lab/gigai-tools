@@ -57,7 +57,7 @@ The worker: `cd worker && npm ci && npm test`.
 - For a change to a tool's interface, add a screenshot.
 - You are responsible for every line you submit, however you wrote it.
 
-## Licence
+## License
 
 By contributing, you agree that your contribution is licensed under the [Apache License 2.0](LICENSE), the same as the project (inbound = outbound), or under AGPL-3.0-or-later if it changes `backend/app/pdf_repair/`. There is no CLA. You keep the copyright on your contributions.
 

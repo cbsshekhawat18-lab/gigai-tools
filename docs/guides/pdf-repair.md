@@ -1,12 +1,12 @@
 ---
-description: The optional GigAI Tools PDF repair and OCR service (AGPL-3.0), which recovers text from PDFs with damaged fonts using PyMuPDF and tesseract. Licence, install and settings.
+description: The optional GigAI Tools PDF repair and OCR service (AGPL-3.0), which recovers text from PDFs with damaged fonts using PyMuPDF and tesseract. License, install and settings.
 ---
 
 # PDF repair
 
 Some PDFs show readable text but extract as garbage, because their fonts map characters wrongly. PDF to Excel detects this and offers to repair the text with OCR. The repair runs on the backend, in `backend/app/pdf_repair/`.
 
-## Licence
+## License
 
 This folder is licensed under the **GNU AGPL-3.0-or-later**, not Apache-2.0, because it uses PyMuPDF, which is AGPL-3.0. The rest of the repository stays Apache-2.0.
 

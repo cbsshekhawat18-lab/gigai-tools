@@ -1,5 +1,5 @@
 ---
-description: Answers about GigAI Tools - whether files are uploaded, using it without the backend, licences, the developer API, forking and rebranding, and how to report a problem.
+description: Answers about GigAI Tools - whether files are uploaded, using it without the backend, licenses, the developer API, forking and rebranding, and how to report a problem.
 ---
 
 # FAQ
@@ -20,13 +20,13 @@ After a tool has loaded once, most browser tools keep working offline, because t
 
 Yes. The browser tools need only the static site. Video to Work analysis, GigAI Verify, IconLab's AI composer, PDF repair and the developer API need the backend, and say so when it is missing.
 
-## Which licence is it under?
+## Which license is it under?
 
 The Apache License 2.0, except `backend/app/pdf_repair/`, which is AGPL-3.0-or-later because it uses PyMuPDF. That folder is optional and off by default. Third-party components are listed in [THIRD_PARTY_NOTICES.md](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/THIRD_PARTY_NOTICES.md).
 
 ## Can I use it for my own site?
 
-Yes, under the licence. A copy you run publicly must use its own name and logo, not GigAI's. [TRADEMARKS.md](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/TRADEMARKS.md) lists the files to change.
+Yes, under the license. A copy you run publicly must use its own name and logo, not GigAI's. [TRADEMARKS.md](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/TRADEMARKS.md) lists the files to change.
 
 ## Is the developer API production-ready?
 
