@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Task worker for the GigAI Developer API. Bundled with esbuild, deployed as one file (sharp stays external - native, installed on the server).",
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test test/*.test.mjs",
     "build": "esbuild worker.mjs --bundle --platform=node --format=esm --target=node22 --external:pg-native --external:sharp --external:svgo --external:@napi-rs/canvas --outfile=worker.bundle.mjs --banner:js=\"import { createRequire as __gigaiCR } from 'node:module'; const require = __gigaiCR(import.meta.url);\""
   },
   "dependencies": {

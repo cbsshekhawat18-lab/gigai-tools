@@ -5,7 +5,12 @@ useDefault = true
 
 [allowlist]
 description = "Documented fake credentials"
+# Matched against the whole line, so each entry names exactly one demo value.
+regexTarget = "line"
 regexes = [
+  # The JWT Decoder's sample token (modules/tools/dev/jwt-decoder-tool.tsx): a
+  # jwt.io-style demo for "Ada Lovelace", signed with the public sample secret.
+  '''const SAMPLE_TOKEN =''',
   # The Secret Scanner tool's demo .env (modules/tools/dev/secret-scanner-tool.tsx):
   # every value is fabricated, and the key prefixes are joined at runtime.
   '''postgres://admin:s3cr3tpassword@db\.example\.com''',
