@@ -7,7 +7,7 @@ uvicorn[standard]>=0.52,<1.0
 pydantic>=2.13,<3.0
 pydantic-settings>=2.15,<3.0
 python-multipart>=0.0.32,<1.0   # file uploads
-httpx>=0.28,<1.0                # outbound HTTP (Groq, link checks)
+httpx>=0.28.1,<1.0                # outbound HTTP (Groq, link checks)
 
 # Developer API (/v1): Postgres, password hashing, session tokens, images
 psycopg[binary,pool]>=3.3,<4.0
