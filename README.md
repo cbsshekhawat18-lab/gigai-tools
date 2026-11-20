@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="GigAI Tools" src="https://raw.githubusercontent.com/cbsshekhawat18-lab/gigai-tools/main/public/brand/logo-mark.png" width="88">
+  <img alt="GigAI Tools logo: a document with a wrench on an orange rounded square" src="https://raw.githubusercontent.com/cbsshekhawat18-lab/gigai-tools/main/public/brand/logo-mark-256.png" width="96">
 </p>
 
 <h1 align="center">GigAI Tools</h1>
