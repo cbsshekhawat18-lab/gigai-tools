@@ -2,4 +2,4 @@
 # Install on top of requirements.txt, put the tesseract binary and its
 # language data on the PATH, and set PDF_REPAIR_ENABLED=true.
 -r requirements.txt
-pymupdf>=1.28
+pymupdf>=2.1
