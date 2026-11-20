@@ -61,11 +61,11 @@ export function Header({ navData }: HeaderProps) {
       <Container size="wide" className="relative flex h-16 items-center gap-3">
         <Logo />
 
-        {/* True-centered on the header midline from xl up (absolute, so the
-            wider search box can't drag it off-center); centered in the free
-            space at lg where absolute centering would collide with search. */}
+        {/* Centered in the free space between the logo and the controls. It
+            stays in flow at every width: absolute centering on the midline let
+            the nav slide under the search box and the sign-in buttons. */}
         <nav
-          className="mx-auto hidden items-center gap-0.5 lg:flex xl:absolute xl:left-1/2 xl:top-1/2 xl:mx-0 xl:-translate-x-1/2 xl:-translate-y-1/2"
+          className="mx-auto hidden items-center gap-0.5 lg:flex"
           aria-label="Primary"
         >
           <BrowseMenu
@@ -83,11 +83,9 @@ export function Header({ navData }: HeaderProps) {
           ))}
         </nav>
 
-        {/* ml-auto pushes controls right. Exception: at lg the nav centers via
-            its own mx-auto (in-flow), which needs ml-0 here; at xl the nav is
-            absolute (out of flow), so ml-auto must return or search collapses
-            leftward into the centered nav. */}
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2 lg:ml-0 xl:ml-auto">
+        {/* ml-auto pushes controls right while the nav is hidden; from lg the
+            nav's own mx-auto does that, so ml-0 here. */}
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2 lg:ml-0">
           {/* Kept narrow at lg/xl on purpose: the nav is centred on the header
               midline, so an over-wide search box eats the right-hand gap and
               makes the centred nav read as shoved right (it was 320px, leaving
