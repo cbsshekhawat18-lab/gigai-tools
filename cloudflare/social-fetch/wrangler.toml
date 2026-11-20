@@ -1,0 +1,13 @@
+name = "gigai-social-fetch"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Serve the proxy from the tools domain so the browser calls a SAME-ORIGIN path
+# (/api/social-fetch). Requires the gigai.tools zone to be on this Cloudflare
+# account. server.mjs is the same proxy for your own server behind a reverse
+# proxy, so this Worker is optional. If you'd rather use the free *.workers.dev URL instead, delete this
+# [[routes]] block, run `wrangler deploy`, and set the tool's
+# NEXT_PUBLIC_INSPECTOR_PROXY to the printed https://gigai-social-fetch.<sub>.workers.dev URL.
+[[routes]]
+pattern = "gigai.tools/api/social-fetch"
+zone_name = "gigai.tools"

@@ -1,0 +1,41 @@
+# GigAI Tools
+
+> GigAI Tools is an open-source collection of 273 free file and developer tools that run in your browser: PDF, image, video, audio, QR, SVG, SEO and developer utilities. Most tools process your files on your own device, so nothing is uploaded. The few that need a server say so on the page and delete what they receive. It is the code behind https://gigai.tools.
+
+Key facts:
+- Live site: https://gigai.tools
+- Source: https://github.com/cbsshekhawat18-lab/gigai-tools
+- Documentation: https://cbsshekhawat18-lab.github.io/gigai-tools/
+- License: Apache-2.0; backend/app/pdf_repair/ is AGPL-3.0 (optional, off by default). The GigAI name and logo are trademarks.
+- Stack: Next.js 15 static export, React 19, TypeScript, Tailwind CSS v4; engines pdf.js, pdf-lib, ffmpeg.wasm, Transformers.js, tesseract.js, svgo; FastAPI backend on Python 3.12+; developer API on PostgreSQL with a Node task worker.
+- Of 273 tools, 241 run only in the browser, 29 can read a URL through a fetch proxy, and 3 use the backend for one part.
+
+## Start here
+
+- [Quickstart](https://cbsshekhawat18-lab.github.io/gigai-tools/quickstart/): clone, npm install, npm run dev; add the FastAPI backend in a second terminal.
+- [All tools](https://cbsshekhawat18-lab.github.io/gigai-tools/tools/): every tool by category, with what it does, its formats and where it runs.
+- [What runs where](https://cbsshekhawat18-lab.github.io/gigai-tools/privacy-model/): which tools use a server, and what the server keeps.
+
+## Run each part
+
+- [The website](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/website/): develop, build and host the static export.
+- [The backend](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/backend/): FastAPI endpoints, settings and tests.
+- [The developer API](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/developer-api/): accounts, API keys, jobs and webhooks on PostgreSQL.
+- [The task worker](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/worker/): runs developer API jobs.
+- [The fetch proxies](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/fetch-proxies/): how URL-reading tools fetch a page.
+- [PDF repair](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/pdf-repair/): the optional AGPL OCR module.
+- [API clients](https://cbsshekhawat18-lab.github.io/gigai-tools/guides/clients/): npm gigai-tools, PyPI gigai-tools, npm gigai-tools-mcp.
+- [Self-hosting](https://cbsshekhawat18-lab.github.io/gigai-tools/self-hosting/): static hosting, systemd, nginx and Docker.
+- [Configuration](https://cbsshekhawat18-lab.github.io/gigai-tools/configuration/): every setting.
+
+## Build on it
+
+- [Architecture](https://cbsshekhawat18-lab.github.io/gigai-tools/architecture/): the registry, pages, engines and backend.
+- [Adding a tool](https://cbsshekhawat18-lab.github.io/gigai-tools/adding-a-tool/): the files a new tool needs.
+
+## Optional
+
+- [FAQ](https://cbsshekhawat18-lab.github.io/gigai-tools/faq/)
+- [Contributing](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/CONTRIBUTING.md)
+- [Security policy](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/SECURITY.md)
+- [Changelog](https://github.com/cbsshekhawat18-lab/gigai-tools/blob/main/CHANGELOG.md)

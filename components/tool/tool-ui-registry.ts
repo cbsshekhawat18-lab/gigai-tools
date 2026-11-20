@@ -1,0 +1,346 @@
+"use client";
+
+import type { ComponentType } from "react";
+import { createElement } from "react";
+import dynamic from "next/dynamic";
+
+import type { WorkspaceToolData } from "@/types";
+import type { ImageToolProps } from "@/components/tool/types";
+import { ToolMountSkeleton, type ToolSkeletonKind } from "@/components/tool/tool-skeleton";
+
+/**
+ * Client-UI registry for interactive image tools.
+ *
+ * Each live tool slug maps to its workspace component
+ * (modules/tools/image/<slug>-tool.tsx), code-split per tool via next/dynamic
+ * and rendered client-side only (ssr:false), all image processing happens in
+ * the browser, so there is nothing to server-render. A skeleton shows while the
+ * chunk loads. Because `ssr:false` is only allowed inside a Client Component,
+ * this whole module is "use client" and exposes a <ToolMount> the (server) tool
+ * page renders directly.
+ */
+type ToolUI = ComponentType<ImageToolProps>;
+
+/* Workspace-shaped loading placeholders (no layout jump on chunk arrival):
+   file tools get a drop-zone silhouette, text tools a toolbar+pane, the QR
+   studio a form+preview grid. */
+const loadingFor = (kind: ToolSkeletonKind) => {
+  const Loading = () => createElement(ToolMountSkeleton, { kind });
+  return Loading;
+};
+const loadingUpload = loadingFor("upload");
+const loadingEditor = loadingFor("editor");
+const loadingStudio = loadingFor("studio");
+
+const TOOL_UI: Record<string, ToolUI> = {
+  "image-compressor": dynamic(() => import("@/modules/tools/image/image-compressor-tool"), { ssr: false, loading: loadingUpload }),
+  "image-resizer": dynamic(() => import("@/modules/tools/image/image-resizer-tool"), { ssr: false, loading: loadingUpload }),
+  "crop-image": dynamic(() => import("@/modules/tools/image/crop-image-tool"), { ssr: false, loading: loadingUpload }),
+  "png-to-jpg": dynamic(() => import("@/modules/tools/image/png-to-jpg-tool"), { ssr: false, loading: loadingUpload }),
+  "jpg-to-png": dynamic(() => import("@/modules/tools/image/jpg-to-png-tool"), { ssr: false, loading: loadingUpload }),
+  "webp-converter": dynamic(() => import("@/modules/tools/image/webp-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "heic-to-jpg": dynamic(() => import("@/modules/tools/image/heic-to-jpg-tool"), { ssr: false, loading: loadingUpload }),
+  "remove-metadata": dynamic(() => import("@/modules/tools/image/remove-metadata-tool"), { ssr: false, loading: loadingUpload }),
+  "subtitle-converter": dynamic(() => import("@/modules/tools/video/subtitle-converter-tool"), { ssr: false, loading: loadingUpload }),
+  // ssr:false matters here beyond convention: the workspace touches Web Audio,
+  // MediaRecorder and WebGPU, none of which exist during a static export.
+  "video-intelligence": dynamic(() => import("@/modules/tools/video/video-intelligence-tool"), { ssr: false, loading: loadingUpload }),
+  // Same reason as above, plus IndexedDB and object URLs, none of which exist
+  // during a static export.
+  "video-to-work": dynamic(() => import("@/modules/tools/video/video-to-work-tool"), { ssr: false, loading: loadingUpload }),
+  "image-upscaler": dynamic(() => import("@/modules/tools/image/image-upscaler-tool"), { ssr: false, loading: loadingUpload }),
+  "eps-to-png": dynamic(() => import("@/modules/tools/image/eps-to-png-tool"), { ssr: false, loading: loadingUpload }),
+
+  // ── PDF tools (Phase 2) ─────────────────────────────────────────────────────
+  "merge-pdf": dynamic(() => import("@/modules/tools/pdf/merge-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-editor": dynamic(() => import("@/modules/tools/pdf/pdf-editor-tool"), { ssr: false, loading: loadingUpload }),
+  "split-pdf": dynamic(() => import("@/modules/tools/pdf/split-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "compress-pdf": dynamic(() => import("@/modules/tools/pdf/compress-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-word": dynamic(() => import("@/modules/tools/pdf/pdf-to-word-tool"), { ssr: false, loading: loadingUpload }),
+  "word-to-pdf": dynamic(() => import("@/modules/tools/pdf/word-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "jpg-to-pdf": dynamic(() => import("@/modules/tools/pdf/jpg-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-jpg": dynamic(() => import("@/modules/tools/pdf/pdf-to-jpg-tool"), { ssr: false, loading: loadingUpload }),
+  "rotate-pdf": dynamic(() => import("@/modules/tools/pdf/rotate-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "extract-pdf-pages": dynamic(() => import("@/modules/tools/pdf/extract-pdf-pages-tool"), { ssr: false, loading: loadingUpload }),
+  "delete-pdf-pages": dynamic(() => import("@/modules/tools/pdf/delete-pdf-pages-tool"), { ssr: false, loading: loadingUpload }),
+  "reorder-pdf-pages": dynamic(() => import("@/modules/tools/pdf/reorder-pdf-pages-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-password-protect": dynamic(() => import("@/modules/tools/pdf/pdf-password-protect-tool"), { ssr: false, loading: loadingUpload }),
+  "unlock-pdf": dynamic(() => import("@/modules/tools/pdf/unlock-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "ocr-pdf": dynamic(() => import("@/modules/tools/pdf/ocr-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "gigai-fit": dynamic(() => import("@/modules/tools/file-intel/gigai-fit-tool"), { ssr: false, loading: loadingUpload }),
+  "gigai-verify": dynamic(() => import("@/modules/tools/file-intel/gigai-verify-tool"), { ssr: false, loading: loadingUpload }),
+  "icon-lab": dynamic(() => import("@/modules/tools/file-intel/gigai-iconlab-tool"), { ssr: false, loading: loadingUpload }),
+  "scan-to-pdf": dynamic(() => import("@/modules/tools/pdf/scan-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-markdown": dynamic(() => import("@/modules/tools/pdf/pdf-to-markdown-tool"), { ssr: false, loading: loadingUpload }),
+  "crop-pdf": dynamic(() => import("@/modules/tools/pdf/crop-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-forms": dynamic(() => import("@/modules/tools/pdf/pdf-forms-tool"), { ssr: false, loading: loadingUpload }),
+  "redact-pdf": dynamic(() => import("@/modules/tools/pdf/redact-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "repair-pdf": dynamic(() => import("@/modules/tools/pdf/repair-pdf-tool"), { ssr: false, loading: loadingUpload }),
+
+  // ── Developer tools (Phase 3) ───────────────────────────────────────────────
+  "secret-scanner": dynamic(() => import("@/modules/tools/dev/secret-scanner-tool"), { ssr: false, loading: loadingEditor }),
+  "token-counter": dynamic(() => import("@/modules/tools/dev/token-counter-tool"), { ssr: false, loading: loadingEditor }),
+  "regex-generator": dynamic(() => import("@/modules/tools/dev/regex-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "json-formatter": dynamic(() => import("@/modules/tools/dev/json-formatter-tool"), { ssr: false, loading: loadingEditor }),
+  "json-validator": dynamic(() => import("@/modules/tools/dev/json-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "json-tree-viewer": dynamic(() => import("@/modules/tools/dev/json-tree-viewer-tool"), { ssr: false, loading: loadingEditor }),
+  "json-diff": dynamic(() => import("@/modules/tools/dev/json-diff-tool"), { ssr: false, loading: loadingEditor }),
+  "json-to-typescript": dynamic(() => import("@/modules/tools/dev/json-to-typescript-tool"), { ssr: false, loading: loadingEditor }),
+  "xml-formatter": dynamic(() => import("@/modules/tools/dev/xml-formatter-tool"), { ssr: false, loading: loadingEditor }),
+  "yaml-formatter": dynamic(() => import("@/modules/tools/dev/yaml-formatter-tool"), { ssr: false, loading: loadingEditor }),
+  "sql-formatter": dynamic(() => import("@/modules/tools/dev/sql-formatter-tool"), { ssr: false, loading: loadingEditor }),
+  "html-formatter": dynamic(() => import("@/modules/tools/dev/html-formatter-tool"), { ssr: false, loading: loadingEditor }),
+  "css-beautifier": dynamic(() => import("@/modules/tools/dev/css-beautifier-tool"), { ssr: false, loading: loadingEditor }),
+  "javascript-beautifier": dynamic(() => import("@/modules/tools/dev/javascript-beautifier-tool"), { ssr: false, loading: loadingEditor }),
+  "html-minifier": dynamic(() => import("@/modules/tools/dev/html-minifier-tool"), { ssr: false, loading: loadingEditor }),
+  "css-minifier": dynamic(() => import("@/modules/tools/dev/css-minifier-tool"), { ssr: false, loading: loadingEditor }),
+  "javascript-minifier": dynamic(() => import("@/modules/tools/dev/javascript-minifier-tool"), { ssr: false, loading: loadingEditor }),
+  "base64-encoder": dynamic(() => import("@/modules/tools/dev/base64-encoder-tool"), { ssr: false, loading: loadingEditor }),
+  "base64-decoder": dynamic(() => import("@/modules/tools/dev/base64-decoder-tool"), { ssr: false, loading: loadingEditor }),
+  "url-encoder": dynamic(() => import("@/modules/tools/dev/url-encoder-tool"), { ssr: false, loading: loadingEditor }),
+  "url-decoder": dynamic(() => import("@/modules/tools/dev/url-decoder-tool"), { ssr: false, loading: loadingEditor }),
+  "jwt-decoder": dynamic(() => import("@/modules/tools/dev/jwt-decoder-tool"), { ssr: false, loading: loadingEditor }),
+  "hash-generator": dynamic(() => import("@/modules/tools/dev/hash-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "uuid-generator": dynamic(() => import("@/modules/tools/dev/uuid-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "nanoid-generator": dynamic(() => import("@/modules/tools/dev/nanoid-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "password-generator": dynamic(() => import("@/modules/tools/dev/password-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "regex-tester": dynamic(() => import("@/modules/tools/dev/regex-tester-tool"), { ssr: false, loading: loadingEditor }),
+  "cron-generator": dynamic(() => import("@/modules/tools/dev/cron-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "unix-timestamp-converter": dynamic(() => import("@/modules/tools/dev/unix-timestamp-converter-tool"), { ssr: false, loading: loadingEditor }),
+  "markdown-preview": dynamic(() => import("@/modules/tools/dev/markdown-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "diff-checker": dynamic(() => import("@/modules/tools/dev/diff-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "barcode-generator": dynamic(() => import("@/modules/tools/dev/barcode-generator-tool"), { ssr: false, loading: loadingEditor }),
+
+  // ── QR tools (Phase 4: the QR studio) ──────────────────────────────────────
+  "qr-code-generator": dynamic(() => import("@/modules/tools/qr/qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "qr-code-with-logo": dynamic(() => import("@/modules/tools/qr/qr-code-with-logo-tool"), { ssr: false, loading: loadingStudio }),
+  "dynamic-qr-code-generator": dynamic(() => import("@/modules/tools/qr/dynamic-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "static-qr-code-generator": dynamic(() => import("@/modules/tools/qr/static-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "bulk-qr-code-generator": dynamic(() => import("@/modules/tools/qr/bulk-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "wifi-qr-code-generator": dynamic(() => import("@/modules/tools/qr/wifi-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "vcard-qr-code-generator": dynamic(() => import("@/modules/tools/qr/vcard-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "business-card-qr-code-generator": dynamic(() => import("@/modules/tools/qr/business-card-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "upi-qr-code-generator": dynamic(() => import("@/modules/tools/qr/upi-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "payment-qr-code-generator": dynamic(() => import("@/modules/tools/qr/payment-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "email-qr-code-generator": dynamic(() => import("@/modules/tools/qr/email-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "sms-qr-code-generator": dynamic(() => import("@/modules/tools/qr/sms-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "phone-qr-code-generator": dynamic(() => import("@/modules/tools/qr/phone-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "whatsapp-qr-code-generator": dynamic(() => import("@/modules/tools/qr/whatsapp-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "telegram-qr-code-generator": dynamic(() => import("@/modules/tools/qr/telegram-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "facebook-qr-code-generator": dynamic(() => import("@/modules/tools/qr/facebook-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "instagram-qr-code-generator": dynamic(() => import("@/modules/tools/qr/instagram-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "linkedin-qr-code-generator": dynamic(() => import("@/modules/tools/qr/linkedin-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "youtube-qr-code-generator": dynamic(() => import("@/modules/tools/qr/youtube-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "spotify-qr-code-generator": dynamic(() => import("@/modules/tools/qr/spotify-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "location-qr-code-generator": dynamic(() => import("@/modules/tools/qr/location-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "google-maps-qr-code-generator": dynamic(() => import("@/modules/tools/qr/google-maps-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "event-qr-code-generator": dynamic(() => import("@/modules/tools/qr/event-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "calendar-qr-code-generator": dynamic(() => import("@/modules/tools/qr/calendar-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "menu-qr-code-generator": dynamic(() => import("@/modules/tools/qr/menu-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "pdf-qr-code-generator": dynamic(() => import("@/modules/tools/qr/pdf-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "image-qr-code-generator": dynamic(() => import("@/modules/tools/qr/image-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "video-qr-code-generator": dynamic(() => import("@/modules/tools/qr/video-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "app-download-qr-code-generator": dynamic(() => import("@/modules/tools/qr/app-download-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "google-play-qr-code-generator": dynamic(() => import("@/modules/tools/qr/google-play-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "app-store-qr-code-generator": dynamic(() => import("@/modules/tools/qr/app-store-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "zoom-qr-code-generator": dynamic(() => import("@/modules/tools/qr/zoom-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "discord-qr-code-generator": dynamic(() => import("@/modules/tools/qr/discord-qr-code-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "qr-code-scanner": dynamic(() => import("@/modules/tools/qr/qr-code-scanner-tool"), { ssr: false, loading: loadingStudio }),
+  "qr-code-reader": dynamic(() => import("@/modules/tools/qr/qr-code-reader-tool"), { ssr: false, loading: loadingStudio }),
+  "qr-code-decoder": dynamic(() => import("@/modules/tools/qr/qr-code-decoder-tool"), { ssr: false, loading: loadingStudio }),
+
+  // ── SEO tools (Phase 5: the Website & SEO toolkit) ─────────────────────────
+  "meta-tag-generator": dynamic(() => import("@/modules/tools/seo/meta-tag-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "meta-tag-analyzer": dynamic(() => import("@/modules/tools/seo/meta-tag-analyzer-tool"), { ssr: false, loading: loadingEditor }),
+  "meta-description-generator": dynamic(() => import("@/modules/tools/seo/meta-description-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "meta-title-preview": dynamic(() => import("@/modules/tools/seo/meta-title-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "open-graph-generator": dynamic(() => import("@/modules/tools/seo/open-graph-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "twitter-card-generator": dynamic(() => import("@/modules/tools/seo/twitter-card-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "canonical-url-generator": dynamic(() => import("@/modules/tools/seo/canonical-url-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "social-share-inspector": dynamic(() => import("@/modules/tools/seo/social-share-inspector-tool"), { ssr: false, loading: loadingEditor }),
+  "schema-generator": dynamic(() => import("@/modules/tools/seo/schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "faq-schema-generator": dynamic(() => import("@/modules/tools/seo/faq-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "article-schema-generator": dynamic(() => import("@/modules/tools/seo/article-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "product-schema-generator": dynamic(() => import("@/modules/tools/seo/product-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "organization-schema-generator": dynamic(() => import("@/modules/tools/seo/organization-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "local-business-schema-generator": dynamic(() => import("@/modules/tools/seo/local-business-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "software-schema-generator": dynamic(() => import("@/modules/tools/seo/software-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "review-schema-generator": dynamic(() => import("@/modules/tools/seo/review-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "person-schema-generator": dynamic(() => import("@/modules/tools/seo/person-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "event-schema-generator": dynamic(() => import("@/modules/tools/seo/event-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "breadcrumb-schema-generator": dynamic(() => import("@/modules/tools/seo/breadcrumb-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "video-schema-generator": dynamic(() => import("@/modules/tools/seo/video-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "recipe-schema-generator": dynamic(() => import("@/modules/tools/seo/recipe-schema-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "xml-sitemap-generator": dynamic(() => import("@/modules/tools/seo/xml-sitemap-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "html-sitemap-generator": dynamic(() => import("@/modules/tools/seo/html-sitemap-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "image-sitemap-generator": dynamic(() => import("@/modules/tools/seo/image-sitemap-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "video-sitemap-generator": dynamic(() => import("@/modules/tools/seo/video-sitemap-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "news-sitemap-generator": dynamic(() => import("@/modules/tools/seo/news-sitemap-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "sitemap-validator": dynamic(() => import("@/modules/tools/seo/sitemap-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "robots-txt-generator": dynamic(() => import("@/modules/tools/seo/robots-txt-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "robots-txt-validator": dynamic(() => import("@/modules/tools/seo/robots-txt-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "google-serp-preview": dynamic(() => import("@/modules/tools/seo/google-serp-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "open-graph-preview": dynamic(() => import("@/modules/tools/seo/open-graph-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "twitter-preview": dynamic(() => import("@/modules/tools/seo/twitter-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "rich-results-preview": dynamic(() => import("@/modules/tools/seo/rich-results-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "url-parser": dynamic(() => import("@/modules/tools/seo/url-parser-tool"), { ssr: false, loading: loadingEditor }),
+  "slug-generator": dynamic(() => import("@/modules/tools/seo/slug-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "utm-builder": dynamic(() => import("@/modules/tools/seo/utm-builder-tool"), { ssr: false, loading: loadingEditor }),
+  "campaign-url-builder": dynamic(() => import("@/modules/tools/seo/campaign-url-builder-tool"), { ssr: false, loading: loadingEditor }),
+  "html-validator": dynamic(() => import("@/modules/tools/seo/html-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "css-validator": dynamic(() => import("@/modules/tools/seo/css-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "jsonld-validator": dynamic(() => import("@/modules/tools/seo/jsonld-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "schema-validator": dynamic(() => import("@/modules/tools/seo/schema-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "meta-tag-validator": dynamic(() => import("@/modules/tools/seo/meta-tag-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "http-header-checker": dynamic(() => import("@/modules/tools/seo/http-header-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "security-header-checker": dynamic(() => import("@/modules/tools/seo/security-header-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "ssl-checker": dynamic(() => import("@/modules/tools/seo/ssl-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "csp-generator": dynamic(() => import("@/modules/tools/seo/csp-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "heading-checker": dynamic(() => import("@/modules/tools/seo/heading-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "reading-time-calculator": dynamic(() => import("@/modules/tools/seo/reading-time-calculator-tool"), { ssr: false, loading: loadingEditor }),
+  "keyword-density-checker": dynamic(() => import("@/modules/tools/seo/keyword-density-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "word-counter": dynamic(() => import("@/modules/tools/seo/word-counter-tool"), { ssr: false, loading: loadingEditor }),
+  "character-counter": dynamic(() => import("@/modules/tools/seo/character-counter-tool"), { ssr: false, loading: loadingEditor }),
+
+  // ── SVG tools (Phase 6, the SVG toolkit) ───────────────────────────────────
+  "svg-viewer": dynamic(() => import("@/modules/tools/svg/svg-viewer-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-editor": dynamic(() => import("@/modules/tools/svg/svg-editor-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-optimizer": dynamic(() => import("@/modules/tools/svg/svg-optimizer-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-minifier": dynamic(() => import("@/modules/tools/svg/svg-minifier-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-prettifier": dynamic(() => import("@/modules/tools/svg/svg-prettifier-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-compressor": dynamic(() => import("@/modules/tools/svg/svg-compressor-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-size-optimizer": dynamic(() => import("@/modules/tools/svg/svg-size-optimizer-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-code-formatter": dynamic(() => import("@/modules/tools/svg/svg-code-formatter-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-validator": dynamic(() => import("@/modules/tools/svg/svg-validator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-to-react": dynamic(() => import("@/modules/tools/svg/svg-to-react-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-to-vue": dynamic(() => import("@/modules/tools/svg/svg-to-vue-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-to-html": dynamic(() => import("@/modules/tools/svg/svg-to-html-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-to-css": dynamic(() => import("@/modules/tools/svg/svg-to-css-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-to-data-uri": dynamic(() => import("@/modules/tools/svg/svg-to-data-uri-tool"), { ssr: false, loading: loadingEditor }),
+  "data-uri-to-svg": dynamic(() => import("@/modules/tools/svg/data-uri-to-svg-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-to-png": dynamic(() => import("@/modules/tools/svg/svg-to-png-tool"), { ssr: false, loading: loadingEditor }),
+  "png-to-svg": dynamic(() => import("@/modules/tools/svg/png-to-svg-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-color-editor": dynamic(() => import("@/modules/tools/svg/svg-color-editor-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-path-editor": dynamic(() => import("@/modules/tools/svg/svg-path-editor-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-path-visualizer": dynamic(() => import("@/modules/tools/svg/svg-path-visualizer-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-sprite-generator": dynamic(() => import("@/modules/tools/svg/svg-sprite-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-icon-generator": dynamic(() => import("@/modules/tools/svg/svg-icon-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-animation-generator": dynamic(() => import("@/modules/tools/svg/svg-animation-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-gradient-generator": dynamic(() => import("@/modules/tools/svg/svg-gradient-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-background-generator": dynamic(() => import("@/modules/tools/svg/svg-background-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-pattern-generator": dynamic(() => import("@/modules/tools/svg/svg-pattern-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-wave-generator": dynamic(() => import("@/modules/tools/svg/svg-wave-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-blob-generator": dynamic(() => import("@/modules/tools/svg/svg-blob-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-shape-generator": dynamic(() => import("@/modules/tools/svg/svg-shape-generator-tool"), { ssr: false, loading: loadingEditor }),
+  "svg-placeholder-generator": dynamic(() => import("@/modules/tools/svg/svg-placeholder-generator-tool"), { ssr: false, loading: loadingEditor }),
+
+  // ── Document tools (Phase 7, the Document Studio) ──────────────────────────
+  "csv-viewer": dynamic(() => import("@/modules/tools/document/csv-viewer-tool"), { ssr: false, loading: loadingUpload }),
+  "csv-editor": dynamic(() => import("@/modules/tools/document/csv-editor-tool"), { ssr: false, loading: loadingUpload }),
+  "csv-to-json": dynamic(() => import("@/modules/tools/document/csv-to-json-tool"), { ssr: false, loading: loadingUpload }),
+  "json-to-csv": dynamic(() => import("@/modules/tools/document/json-to-csv-tool"), { ssr: false, loading: loadingUpload }),
+  "csv-to-excel": dynamic(() => import("@/modules/tools/document/csv-to-excel-tool"), { ssr: false, loading: loadingUpload }),
+  "excel-to-csv": dynamic(() => import("@/modules/tools/document/excel-to-csv-tool"), { ssr: false, loading: loadingUpload }),
+  "excel-to-pdf": dynamic(() => import("@/modules/tools/document/excel-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-excel": dynamic(() => import("@/modules/tools/document/pdf-to-excel-tool"), { ssr: false, loading: loadingUpload }),
+  "txt-to-pdf": dynamic(() => import("@/modules/tools/document/txt-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-txt": dynamic(() => import("@/modules/tools/document/pdf-to-txt-tool"), { ssr: false, loading: loadingUpload }),
+  "markdown-to-pdf": dynamic(() => import("@/modules/tools/document/markdown-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "html-to-pdf": dynamic(() => import("@/modules/tools/document/html-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-html": dynamic(() => import("@/modules/tools/document/pdf-to-html-tool"), { ssr: false, loading: loadingUpload }),
+  "ppt-to-pdf": dynamic(() => import("@/modules/tools/document/ppt-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "pdf-to-ppt": dynamic(() => import("@/modules/tools/document/pdf-to-ppt-tool"), { ssr: false, loading: loadingUpload }),
+  "epub-viewer": dynamic(() => import("@/modules/tools/document/epub-viewer-tool"), { ssr: false, loading: loadingUpload }),
+  "epub-to-pdf": dynamic(() => import("@/modules/tools/document/epub-to-pdf-tool"), { ssr: false, loading: loadingUpload }),
+  "rtf-viewer": dynamic(() => import("@/modules/tools/document/rtf-viewer-tool"), { ssr: false, loading: loadingUpload }),
+  "document-viewer": dynamic(() => import("@/modules/tools/document/document-viewer-tool"), { ssr: false, loading: loadingUpload }),
+  "document-comparer": dynamic(() => import("@/modules/tools/document/document-comparer-tool"), { ssr: false, loading: loadingUpload }),
+  "document-organizer": dynamic(() => import("@/modules/tools/document/document-organizer-tool"), { ssr: false, loading: loadingUpload }),
+  "document-page-number": dynamic(() => import("@/modules/tools/document/document-page-number-tool"), { ssr: false, loading: loadingUpload }),
+  "document-watermark": dynamic(() => import("@/modules/tools/document/document-watermark-tool"), { ssr: false, loading: loadingUpload }),
+  "document-signature": dynamic(() => import("@/modules/tools/document/document-signature-tool"), { ssr: false, loading: loadingUpload }),
+  "document-metadata-editor": dynamic(() => import("@/modules/tools/document/document-metadata-editor-tool"), { ssr: false, loading: loadingUpload }),
+  "redaction-checker": dynamic(() => import("@/modules/tools/document/redaction-checker-tool"), { ssr: false, loading: loadingUpload }),
+
+  // ── Video tools (Phase 8, the Video Toolkit, FFmpeg WASM) ──────────────────
+  "video-compressor": dynamic(() => import("@/modules/tools/video/video-compressor-tool"), { ssr: false, loading: loadingUpload }),
+  "video-converter": dynamic(() => import("@/modules/tools/video/video-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "video-trimmer": dynamic(() => import("@/modules/tools/video/video-trimmer-tool"), { ssr: false, loading: loadingUpload }),
+  "video-merger": dynamic(() => import("@/modules/tools/video/video-merger-tool"), { ssr: false, loading: loadingUpload }),
+  "video-splitter": dynamic(() => import("@/modules/tools/video/video-splitter-tool"), { ssr: false, loading: loadingUpload }),
+  "video-crop": dynamic(() => import("@/modules/tools/video/video-crop-tool"), { ssr: false, loading: loadingUpload }),
+  "video-rotate": dynamic(() => import("@/modules/tools/video/video-rotate-tool"), { ssr: false, loading: loadingUpload }),
+  "video-speed": dynamic(() => import("@/modules/tools/video/video-speed-tool"), { ssr: false, loading: loadingUpload }),
+  "video-loop": dynamic(() => import("@/modules/tools/video/video-loop-tool"), { ssr: false, loading: loadingUpload }),
+  "video-reverse": dynamic(() => import("@/modules/tools/video/video-reverse-tool"), { ssr: false, loading: loadingUpload }),
+  "video-mute": dynamic(() => import("@/modules/tools/video/video-mute-tool"), { ssr: false, loading: loadingUpload }),
+  "video-resizer": dynamic(() => import("@/modules/tools/video/video-resizer-tool"), { ssr: false, loading: loadingUpload }),
+  "video-watermark": dynamic(() => import("@/modules/tools/video/video-watermark-tool"), { ssr: false, loading: loadingUpload }),
+  "extract-audio": dynamic(() => import("@/modules/tools/video/extract-audio-tool"), { ssr: false, loading: loadingUpload }),
+  "video-to-gif": dynamic(() => import("@/modules/tools/video/video-to-gif-tool"), { ssr: false, loading: loadingUpload }),
+  "gif-to-video": dynamic(() => import("@/modules/tools/video/gif-to-video-tool"), { ssr: false, loading: loadingUpload }),
+  "video-thumbnail-generator": dynamic(() => import("@/modules/tools/video/video-thumbnail-generator-tool"), { ssr: false, loading: loadingUpload }),
+  "video-frame-extractor": dynamic(() => import("@/modules/tools/video/video-frame-extractor-tool"), { ssr: false, loading: loadingUpload }),
+  "video-metadata": dynamic(() => import("@/modules/tools/video/video-metadata-tool"), { ssr: false, loading: loadingUpload }),
+  "video-player": dynamic(() => import("@/modules/tools/video/video-player-tool"), { ssr: false, loading: loadingUpload }),
+  "mp4-to-webm": dynamic(() => import("@/modules/tools/video/mp4-to-webm-tool"), { ssr: false, loading: loadingUpload }),
+  "webm-to-mp4": dynamic(() => import("@/modules/tools/video/webm-to-mp4-tool"), { ssr: false, loading: loadingUpload }),
+  "mov-to-mp4": dynamic(() => import("@/modules/tools/video/mov-to-mp4-tool"), { ssr: false, loading: loadingUpload }),
+  "avi-to-mp4": dynamic(() => import("@/modules/tools/video/avi-to-mp4-tool"), { ssr: false, loading: loadingUpload }),
+  "mkv-to-mp4": dynamic(() => import("@/modules/tools/video/mkv-to-mp4-tool"), { ssr: false, loading: loadingUpload }),
+
+  // ── Audio tools (Phase 9, the Audio Toolkit, Web Audio API) ────────────────
+  "audio-trimmer": dynamic(() => import("@/modules/tools/audio/audio-trimmer-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-cutter": dynamic(() => import("@/modules/tools/audio/audio-cutter-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-merger": dynamic(() => import("@/modules/tools/audio/audio-merger-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-joiner": dynamic(() => import("@/modules/tools/audio/audio-joiner-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-splitter": dynamic(() => import("@/modules/tools/audio/audio-splitter-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-volume-booster": dynamic(() => import("@/modules/tools/audio/audio-volume-booster-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-speed-changer": dynamic(() => import("@/modules/tools/audio/audio-speed-changer-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-reverse": dynamic(() => import("@/modules/tools/audio/audio-reverse-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-fade": dynamic(() => import("@/modules/tools/audio/audio-fade-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-normalizer": dynamic(() => import("@/modules/tools/audio/audio-normalizer-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-silence-remover": dynamic(() => import("@/modules/tools/audio/audio-silence-remover-tool"), { ssr: false, loading: loadingUpload }),
+  "ringtone-maker": dynamic(() => import("@/modules/tools/audio/ringtone-maker-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-compressor": dynamic(() => import("@/modules/tools/audio/audio-compressor-tool"), { ssr: false, loading: loadingUpload }),
+  "mp3-converter": dynamic(() => import("@/modules/tools/audio/mp3-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-to-mp3": dynamic(() => import("@/modules/tools/audio/audio-to-mp3-tool"), { ssr: false, loading: loadingUpload }),
+  "wav-converter": dynamic(() => import("@/modules/tools/audio/wav-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "ogg-converter": dynamic(() => import("@/modules/tools/audio/ogg-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "flac-converter": dynamic(() => import("@/modules/tools/audio/flac-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "m4a-converter": dynamic(() => import("@/modules/tools/audio/m4a-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "aac-converter": dynamic(() => import("@/modules/tools/audio/aac-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-format-converter": dynamic(() => import("@/modules/tools/audio/audio-format-converter-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-recorder": dynamic(() => import("@/modules/tools/audio/audio-recorder-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-player": dynamic(() => import("@/modules/tools/audio/audio-player-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-metadata": dynamic(() => import("@/modules/tools/audio/audio-metadata-tool"), { ssr: false, loading: loadingUpload }),
+  "audio-waveform": dynamic(() => import("@/modules/tools/audio/audio-waveform-tool"), { ssr: false, loading: loadingUpload }),
+
+  // ── GEO Studio ──────────────────────────────────────────────────────────────
+  "geo-audit": dynamic(() => import("@/modules/tools/geo/geo-audit-tool"), { ssr: false, loading: loadingEditor }),
+  "ai-crawler-access-checker": dynamic(() => import("@/modules/tools/geo/ai-crawler-access-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "ai-robots-txt-generator": dynamic(() => import("@/modules/tools/geo/ai-robots-txt-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "ai-crawler-log-analyzer": dynamic(() => import("@/modules/tools/geo/ai-crawler-log-analyzer-tool"), { ssr: false, loading: loadingUpload }),
+  "js-rendering-checker": dynamic(() => import("@/modules/tools/geo/js-rendering-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "content-citability-scorer": dynamic(() => import("@/modules/tools/geo/content-citability-scorer-tool"), { ssr: false, loading: loadingEditor }),
+  "retrieval-chunk-preview": dynamic(() => import("@/modules/tools/geo/retrieval-chunk-preview-tool"), { ssr: false, loading: loadingEditor }),
+  "answer-snippet-checker": dynamic(() => import("@/modules/tools/geo/answer-snippet-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "entity-consistency-checker": dynamic(() => import("@/modules/tools/geo/entity-consistency-checker-tool"), { ssr: false, loading: loadingEditor }),
+  "llms-txt-generator": dynamic(() => import("@/modules/tools/geo/llms-txt-generator-tool"), { ssr: false, loading: loadingStudio }),
+  "ai-schema-checker": dynamic(() => import("@/modules/tools/geo/ai-schema-checker-tool"), { ssr: false, loading: loadingEditor }),
+};
+
+/** Render the interactive workspace for a tool, or a graceful placeholder.
+ * Takes the SLIM workspace projection, the server page must never pass a
+ * full registry Tool here (it would serialise the whole config per page). */
+export function ToolMount({ tool }: { tool: WorkspaceToolData }) {
+  const UI = TOOL_UI[tool.slug];
+  if (!UI) {
+    return createElement(
+      "p",
+      { className: "text-muted-foreground text-sm" },
+      "This tool's workspace is being prepared. Please check back soon.",
+    );
+  }
+  return createElement(UI, { tool });
+}

@@ -1,0 +1,1155 @@
+{
+  "merge-pdf": {
+    "name": "Merge PDF",
+    "category": "pdf",
+    "description": "Combine two or more PDFs into one, in order. Lossless page copying - text stays selectable.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": true,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "split-pdf": {
+    "name": "Split PDF",
+    "category": "pdf",
+    "description": "Extract pages from a PDF into a new document. 'pages' takes numbers and ranges, e.g. \"1-3,7,9-10\".",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "pages": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pages"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "rotate-pdf": {
+    "name": "Rotate PDF",
+    "category": "pdf",
+    "description": "Rotate all pages, or just the pages you name, by 90, 180 or 270 degrees.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "angle": {
+          "type": "integer",
+          "enum": [
+            90,
+            180,
+            270
+          ]
+        },
+        "pages": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "angle"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "pdf-to-text": {
+    "name": "PDF to Text",
+    "category": "pdf",
+    "description": "Extract the text layer of a PDF to plain text, one blank line between pages. Scanned pages without a text layer come out empty - this is extraction, not OCR.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "txt"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf.js",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "convert-image": {
+    "name": "Convert Image",
+    "category": "image",
+    "description": "Convert PNG, JPEG, WebP, AVIF or GIF to PNG, JPEG, WebP or AVIF.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "png",
+            "jpeg",
+            "webp",
+            "avif"
+          ]
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "format"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "resize-image": {
+    "name": "Resize Image",
+    "category": "image",
+    "description": "Resize by width, height or both. 'fit' controls how the aspect ratio is handled (inside keeps it, cover crops, fill stretches).",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "fit": {
+          "type": "string",
+          "enum": [
+            "inside",
+            "cover",
+            "contain",
+            "fill"
+          ]
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "png",
+            "jpeg",
+            "webp",
+            "avif"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "compress-image": {
+    "name": "Compress Image",
+    "category": "image",
+    "description": "Recompress an image by quality, or give target_kb and the engine finds the best quality that fits under that size. If the target is impossible it says so instead of silently missing it.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "target_kb": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 51200
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "jpeg",
+            "webp",
+            "avif"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "optimize-svg": {
+    "name": "Optimize SVG",
+    "category": "svg",
+    "description": "Minify an SVG with svgo (multipass). 'precision' sets decimal places for coordinates.",
+    "input_formats": [
+      "svg"
+    ],
+    "output_formats": [
+      "svg"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "svgo",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "precision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "markdown-to-html": {
+    "name": "Markdown to HTML",
+    "category": "document",
+    "description": "Render Markdown to a standalone HTML document.",
+    "input_formats": [
+      "md",
+      "txt"
+    ],
+    "output_formats": [
+      "html"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "marked",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "generate-qr": {
+    "name": "Generate QR Code",
+    "category": "qr",
+    "description": "Generate a QR code as PNG or SVG from text or a URL. No input file - the 'text' option is the payload.",
+    "input_formats": [],
+    "output_formats": [
+      "png",
+      "svg"
+    ],
+    "multi_input": false,
+    "no_input": true,
+    "max_input_bytes": 0,
+    "timeout_s": 30,
+    "engine": "qrcode",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "png",
+            "svg"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 2048
+        },
+        "margin": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "ecc": {
+          "type": "string",
+          "enum": [
+            "L",
+            "M",
+            "Q",
+            "H"
+          ]
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "delete-pdf-pages": {
+    "name": "Delete PDF Pages",
+    "category": "pdf",
+    "description": "Remove the pages you name and keep the rest. 'pages' takes numbers and ranges, e.g. \"2,5-7\".",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "pages": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pages"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "add-page-numbers": {
+    "name": "Add Page Numbers",
+    "category": "pdf",
+    "description": "Stamp a page number on every page. Choose the corner and the starting number.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "string",
+          "enum": [
+            "bottom-center",
+            "bottom-left",
+            "bottom-right",
+            "top-center",
+            "top-left",
+            "top-right"
+          ]
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9999
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 6,
+          "maximum": 36
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "watermark-pdf": {
+    "name": "Watermark PDF",
+    "category": "pdf",
+    "description": "Stamp a diagonal text watermark across every page. Text only - image watermarks are not supported yet and the docs say so.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 144
+        },
+        "angle": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 90
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.05,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "pdf-metadata": {
+    "name": "Edit PDF Metadata",
+    "category": "pdf",
+    "description": "Set or strip the document info: title, author, subject, keywords. strip=true clears everything first.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 104857600,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "string"
+        },
+        "strip": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "image-to-pdf": {
+    "name": "Images to PDF",
+    "category": "pdf",
+    "description": "Combine images into a PDF, one page per image, in input order. page=a4 centers each image on A4.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "pdf"
+    ],
+    "multi_input": true,
+    "max_input_bytes": 52428800,
+    "timeout_s": 120,
+    "engine": "pdf-lib",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "a4"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "pdf-to-jpg": {
+    "name": "PDF to JPG",
+    "category": "pdf",
+    "description": "Render PDF pages to images, one file per page. 'pages' like \"1-3\", at most 20 per task.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "jpg",
+      "png"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 120,
+    "engine": "pdf.js",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "pages": {
+          "type": "string"
+        },
+        "scale": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "jpg",
+            "png"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "crop-image": {
+    "name": "Crop Image",
+    "category": "image",
+    "description": "Cut a rectangle out of an image: left, top, width, height in pixels.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "left": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "top": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "rotate-image": {
+    "name": "Rotate Image",
+    "category": "image",
+    "description": "Rotate by any angle. Non-right angles get a white background on JPEG, transparent elsewhere.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "angle": {
+          "type": "integer",
+          "minimum": -360,
+          "maximum": 360
+        }
+      },
+      "required": [
+        "angle"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "flip-image": {
+    "name": "Flip Image",
+    "category": "image",
+    "description": "Mirror an image horizontally or vertically.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ]
+        }
+      },
+      "required": [
+        "direction"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "grayscale-image": {
+    "name": "Grayscale Image",
+    "category": "image",
+    "description": "Convert an image to grayscale.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "blur-image": {
+    "name": "Blur Image",
+    "category": "image",
+    "description": "Gaussian blur. sigma controls the strength.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "sigma": {
+          "type": "number",
+          "minimum": 0.3,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "sigma"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "strip-image-metadata": {
+    "name": "Strip Image Metadata",
+    "category": "image",
+    "description": "Re-encode the image without EXIF, GPS, ICC and XMP data. Pixels unchanged apart from re-encoding.",
+    "input_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "output_formats": [
+      "png",
+      "jpg",
+      "webp",
+      "avif",
+      "gif"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 52428800,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "svg-to-png": {
+    "name": "SVG to PNG",
+    "category": "svg",
+    "description": "Rasterize an SVG. Set width/height, or scale to multiply its intrinsic size.",
+    "input_formats": [
+      "svg"
+    ],
+    "output_formats": [
+      "png"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "sharp",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "scale": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "json-to-yaml": {
+    "name": "JSON to YAML",
+    "category": "data",
+    "description": "Convert a JSON document to YAML.",
+    "input_formats": [
+      "json"
+    ],
+    "output_formats": [
+      "yaml"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "js-yaml",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "yaml-to-json": {
+    "name": "YAML to JSON",
+    "category": "data",
+    "description": "Convert a YAML document to JSON.",
+    "input_formats": [
+      "yaml"
+    ],
+    "output_formats": [
+      "json"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "js-yaml",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "indent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "csv-to-json": {
+    "name": "CSV to JSON",
+    "category": "data",
+    "description": "Parse a CSV (first row as headers) into a JSON array of objects. Numbers become numbers.",
+    "input_formats": [
+      "csv"
+    ],
+    "output_formats": [
+      "json"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "papaparse",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "json-to-csv": {
+    "name": "JSON to CSV",
+    "category": "data",
+    "description": "Turn a JSON array of objects into CSV. Nested values are stringified into their cell.",
+    "input_formats": [
+      "json"
+    ],
+    "output_formats": [
+      "csv"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "papaparse",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "delimiter": {
+          "type": "string",
+          "enum": [
+            ",",
+            ";",
+            "tab"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "format-json": {
+    "name": "Format JSON",
+    "category": "data",
+    "description": "Pretty-print or minify JSON. indent=0 minifies.",
+    "input_formats": [
+      "json"
+    ],
+    "output_formats": [
+      "json"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "native",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "indent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "minify-css": {
+    "name": "Minify CSS",
+    "category": "code",
+    "description": "Minify a stylesheet with clean-css.",
+    "input_formats": [
+      "css"
+    ],
+    "output_formats": [
+      "css"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 5242880,
+    "timeout_s": 60,
+    "engine": "clean-css",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "minify-js": {
+    "name": "Minify JavaScript",
+    "category": "code",
+    "description": "Minify a script with terser.",
+    "input_formats": [
+      "js"
+    ],
+    "output_formats": [
+      "js"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 5242880,
+    "timeout_s": 60,
+    "engine": "terser",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "minify-html": {
+    "name": "Minify HTML",
+    "category": "code",
+    "description": "Minify an HTML document, including its inline CSS and JS.",
+    "input_formats": [
+      "html"
+    ],
+    "output_formats": [
+      "html"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 5242880,
+    "timeout_s": 60,
+    "engine": "html-minifier-terser",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "html-to-markdown": {
+    "name": "HTML to Markdown",
+    "category": "document",
+    "description": "Convert an HTML document to Markdown (ATX headings, fenced code).",
+    "input_formats": [
+      "html"
+    ],
+    "output_formats": [
+      "md"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 5242880,
+    "timeout_s": 60,
+    "engine": "turndown",
+    "options_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "convert-subtitles": {
+    "name": "Convert Subtitles",
+    "category": "document",
+    "description": "Convert between SRT and VTT. Already in the target format passes through unchanged.",
+    "input_formats": [
+      "srt",
+      "vtt",
+      "txt"
+    ],
+    "output_formats": [
+      "srt",
+      "vtt"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 5242880,
+    "timeout_s": 60,
+    "engine": "native",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "srt",
+            "vtt"
+          ]
+        }
+      },
+      "required": [
+        "format"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "detect-pii": {
+    "name": "Detect Indian PII",
+    "category": "privacy",
+    "description": "Scan text for 18 Indian identifier types (Aadhaar with checksum, PAN, GSTIN, UPI, IFSC, phone, voter ID and more). The JSON report gives positions, validity, confidence and a masked stand-in - it never repeats the raw identifier.",
+    "output_formats": [
+      "json"
+    ],
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "string"
+        },
+        "require_valid": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "indian-pii",
+    "input_formats": [
+      "txt",
+      "md",
+      "csv",
+      "json",
+      "html"
+    ]
+  },
+  "redact-pii": {
+    "name": "Redact Indian PII",
+    "category": "privacy",
+    "description": "Return a copy of the text with every detected Indian identifier replaced by its masked form. Checksum-validated detection, same engine as detect-pii.",
+    "output_formats": [
+      "txt"
+    ],
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "string"
+        },
+        "require_valid": {
+          "type": "boolean"
+        },
+        "mask_char": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "multi_input": false,
+    "max_input_bytes": 10485760,
+    "timeout_s": 60,
+    "engine": "indian-pii",
+    "input_formats": [
+      "txt",
+      "md",
+      "csv",
+      "json",
+      "html"
+    ]
+  },
+  "ocr-pdf": {
+    "name": "OCR PDF (33 languages)",
+    "category": "pdf",
+    "description": "Extract text from scanned or image-based PDFs with OCR in 33 languages: English, Hindi and other Devanagari scripts, Arabic, Chinese, Japanese, Korean, Tamil, Telugu, Bengali, Urdu and more. format=text gives reading-order plain text, format=json gives every token with its position - the raw material for building spreadsheets from scanned tables.",
+    "input_formats": [
+      "pdf"
+    ],
+    "output_formats": [
+      "txt",
+      "json"
+    ],
+    "multi_input": false,
+    "max_input_bytes": 31457280,
+    "timeout_s": 600,
+    "engine": "tesseract",
+    "options_schema": {
+      "type": "object",
+      "properties": {
+        "langs": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "text",
+            "json"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

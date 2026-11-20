@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block extrahead %}
+  {% if page and page.is_homepage %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "GigAI Tools",
+        "url": "https://gigai.tools",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any (web browser)",
+        "description": "{{ config.site_description }}",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "publisher": { "@type": "Organization", "name": "Gigai Kripa Services", "url": "https://gigaikripaservices.com" }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "name": "GigAI Tools",
+        "codeRepository": "https://github.com/cbsshekhawat18-lab/gigai-tools",
+        "programmingLanguage": ["TypeScript", "Python"],
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "targetProduct": { "@type": "SoftwareApplication", "name": "GigAI Tools", "url": "https://gigai.tools" }
+      }
+    ]
+  }
+  </script>
+  {% endif %}
+{% endblock %}

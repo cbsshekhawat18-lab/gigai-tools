@@ -1,0 +1,2 @@
+# Watchdog: restart the backend or the worker if either stops answering.
+*/5 * * * * root /usr/local/bin/health.sh

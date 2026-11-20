@@ -1,0 +1,4 @@
+# Nightly dump of the developer API database (accounts and job metadata,
+# never file contents). Weekday-numbered files keep a rolling 7 days.
+# Needs /var/backups/gigai_api owned by postgres.
+17 2 * * * postgres pg_dump gigai_api | gzip > /var/backups/gigai_api/gigai_api-$(date +\%u).sql.gz

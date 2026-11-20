@@ -1,0 +1,24 @@
+# GigAI Tools backend. Python 3.12 or later.
+# The lower bounds are the versions the live site runs.
+
+# Web framework, ASGI server, settings
+fastapi>=0.141,<1.0
+uvicorn[standard]>=0.52,<1.0
+pydantic>=2.13,<3.0
+pydantic-settings>=2.15,<3.0
+python-multipart>=0.0.32,<1.0   # file uploads
+httpx>=0.28,<1.0                # outbound HTTP (Groq, link checks)
+
+# Developer API (/v1): Postgres, password hashing, session tokens, images
+psycopg[binary,pool]>=3.3,<4.0
+argon2-cffi>=25.1
+PyJWT>=2.13,<3.0
+pillow>=12.3
+
+# Video -> Work: retrieves Loom/YouTube/Vimeo links server-side. Keep it
+# current; extractors break when the sources change their players.
+yt-dlp>=2026.7.4
+
+# Video -> Work and GigAI Verify can use Anthropic models when
+# ANTHROPIC_API_KEY is set; without it they use Groq, then switch off.
+anthropic>=0.116,<1.0

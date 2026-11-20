@@ -1,0 +1,13 @@
+# Secret scanning (CI: .github/workflows/security.yml). The default rules apply;
+# the allowlist names only values that are deliberately fake and explains why.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Documented fake credentials"
+regexes = [
+  # The Secret Scanner tool's demo .env (modules/tools/dev/secret-scanner-tool.tsx):
+  # every value is fabricated, and the key prefixes are joined at runtime.
+  '''postgres://admin:s3cr3tpassword@db\.example\.com''',
+  '''hunter2superSecret''',
+]

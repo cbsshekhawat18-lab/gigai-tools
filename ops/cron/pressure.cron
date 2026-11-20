@@ -1,0 +1,2 @@
+# Disk and memory warnings, every five minutes.
+*/5 * * * * root /usr/local/bin/pressure.sh

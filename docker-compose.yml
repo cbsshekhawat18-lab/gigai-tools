@@ -1,0 +1,31 @@
+# GigAI Tools: the website and the backend, for local use.
+#
+#   cp .env.example backend/.env   # then fill in what you use
+#   docker compose up --build
+#
+# Website: http://localhost:8080   Backend: http://localhost:8000/docs
+# The developer API (/v1) also needs PostgreSQL; see docs/self-hosting.md.
+
+name: gigai-tools
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: http://localhost:8080
+        NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    env_file:
+      - path: backend/.env
+        required: false
+    environment:
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

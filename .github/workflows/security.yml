@@ -1,0 +1,53 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *" # daily, so an advisory published between pull requests is still seen
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Secret scan (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  npm-audit:
+    name: npm audit (report)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dir: [".", "worker"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: npm audit, production dependencies
+        working-directory: ${{ matrix.dir }}
+        # Reported, not blocking: Dependabot opens the update pull requests.
+        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high
+
+  pip-audit:
+    name: pip-audit (report)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pip-audit
+      - name: pip-audit, backend requirements
+        continue-on-error: true
+        run: pip-audit -r backend/requirements.txt --vulnerability-service osv

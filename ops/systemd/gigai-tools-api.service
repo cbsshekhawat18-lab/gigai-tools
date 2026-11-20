@@ -1,0 +1,14 @@
+[Unit]
+Description=GigAI Tools backend (FastAPI)
+After=network.target postgresql.service
+
+[Service]
+User=gigai
+WorkingDirectory=/opt/gigai-tools/backend
+EnvironmentFile=/opt/gigai-tools/backend/.env
+ExecStart=/opt/gigai-tools/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

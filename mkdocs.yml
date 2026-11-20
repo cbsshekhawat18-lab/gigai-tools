@@ -1,0 +1,101 @@
+site_name: GigAI Tools
+site_url: https://cbsshekhawat18-lab.github.io/gigai-tools/
+site_description: GigAI Tools is an open-source collection of 273 free file and developer tools that run in your browser. Documentation for using, running and self-hosting it.
+site_author: Gigai Kripa Services
+repo_url: https://github.com/cbsshekhawat18-lab/gigai-tools
+repo_name: cbsshekhawat18-lab/gigai-tools
+edit_uri: edit/main/docs/
+exclude_docs: |
+  overrides/
+copyright: Code under Apache-2.0. The GigAI name and logo are trademarks of Gigai Kripa Services.
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  logo: assets/logo-mark.png
+  favicon: assets/logo-mark.png
+  font:
+    text: IBM Plex Sans
+    code: IBM Plex Mono
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle: { icon: material/weather-night, name: Dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle: { icon: material/weather-sunny, name: Light mode }
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/cbsshekhawat18-lab/gigai-tools
+    - icon: material/web
+      link: https://gigai.tools
+
+nav:
+  - Home: index.md
+  - Get started:
+      - Quickstart: quickstart.md
+      - What runs where: privacy-model.md
+  - Tools:
+      - All tools: tools/index.md
+      - SEO: tools/seo-tools.md
+      - PDF: tools/pdf-tools.md
+      - QR codes: tools/qr-tools.md
+      - Developer: tools/developer-tools.md
+      - SVG: tools/svg-tools.md
+      - Video: tools/video-tools.md
+      - Audio: tools/audio-tools.md
+      - GEO: tools/geo-tools.md
+      - Image: tools/image-tools.md
+      - Document: tools/document-tools.md
+      - File intelligence: tools/file-intelligence.md
+  - Run each part:
+      - The website: guides/website.md
+      - The backend: guides/backend.md
+      - The developer API: guides/developer-api.md
+      - The task worker: guides/worker.md
+      - The fetch proxies: guides/fetch-proxies.md
+      - PDF repair: guides/pdf-repair.md
+      - API clients: guides/clients.md
+      - Self-hosting: self-hosting.md
+      - Configuration: configuration.md
+  - Build on it:
+      - Architecture: architecture.md
+      - Adding a tool: adding-a-tool.md
+      - Video to Work: video-to-work.md
+      - Video Intelligence: video-intelligence.md
+  - Project:
+      - FAQ: faq.md
+      - Contributing: contributing.md
+      - Security: security.md

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none" role="img" aria-label="QR Code Tools — Gigai Tools">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+<radialGradient id="glow" cx="30%" cy="26%" r="80%"><stop stop-color="#ffffff" stop-opacity="0.22"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="2.5" fill="#ffffff" opacity="0.07"/></pattern>
+</defs>
+<rect width="1200" height="630" fill="url(#bg)"/>
+<rect width="1200" height="630" fill="url(#dots)"/>
+<rect width="1200" height="630" fill="url(#glow)"/>
+<rect x="96" y="205" width="200" height="200" rx="46" fill="#ffffff" fill-opacity="0.13" stroke="#ffffff" stroke-opacity="0.4" stroke-width="2.5"/>
+<g transform="translate(140,249) scale(1.3)" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="24" height="24" rx="4"/><rect x="56" y="8" width="24" height="24" rx="4"/><rect x="8" y="56" width="24" height="24" rx="4"/><path d="M56 56 h10 M76 56 v10 M56 72 v8 M72 76 h8"/></g>
+<text x="344" y="276" font-family="Inter,system-ui,sans-serif" font-size="30" font-weight="700" fill="#ffffff" opacity="0.8" letter-spacing="3">GIGAI TOOLS</text>
+<text x="344" y="352" font-family="Inter,system-ui,sans-serif" font-size="72" font-weight="800" fill="#ffffff">QR Code Tools</text>
+<text x="346" y="405" font-family="Inter,system-ui,sans-serif" font-size="27" font-weight="500" fill="#ffffff" opacity="0.82">Generate · Brand · Batch · Decode</text>
+<text x="96" y="556" font-family="ui-monospace,SFMono-Regular,monospace" font-size="23" fill="#ffffff" opacity="0.72">gigai.tools</text>
+</svg>

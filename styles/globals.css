@@ -1,0 +1,366 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Class-based dark mode (toggled by next-themes on <html>). */
+@custom-variant dark (&:is(.dark *));
+
+/*
+  ── GigAI Tools design system ─────────────────────────────────────────────────
+  Semantic tokens (shadcn-style) in :root / .dark, mapped into Tailwind's theme
+  via @theme inline so utilities like bg-background, text-muted-foreground,
+  rounded-lg, and the accent palette all resolve to these variables.
+*/
+:root {
+  /*
+    UI-upgrade spec phase 1 - "precision instruments for files".
+    Three color roles, nothing decorative:
+      --ink     near-black with a cool cast: text and structure
+      --paper   warm off-white (NOT pure white): surfaces
+      --signal  ONE saturated accent (instrument orange): primary actions,
+                focus rings and result readouts ONLY
+    plus a neutral ramp derived from ink for borders and muted text.
+    Purple/indigo/violet are BANNED (the strongest "AI site" signal); no
+    gradient text, no gradient buttons anywhere.
+  */
+  --ink: oklch(0.19 0.012 240);
+  --paper: oklch(0.982 0.004 85);
+  --signal: oklch(0.62 0.19 40);
+  --signal-hover: oklch(0.56 0.19 40); /* 10% darker for hover states */
+  --signal-soft: oklch(0.62 0.19 40 / 0.08); /* active/selected fills only */
+
+  /* Neutral ramp from --ink (1=faintest structure, 6=strong muted text). */
+  --neutral-1: oklch(0.955 0.004 240);
+  --neutral-2: oklch(0.925 0.005 240);
+  --neutral-3: oklch(0.86 0.006 240);
+  --neutral-4: oklch(0.68 0.01 240);
+  --neutral-5: oklch(0.5 0.012 240);
+  --neutral-6: oklch(0.38 0.012 240);
+
+  /* Technical radius: 4px boxes (rounded-full stays for circular controls). */
+  --radius: 0.25rem;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+
+  --card: oklch(1 0 0);
+  --card-foreground: var(--ink);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--signal);
+  --primary-foreground: oklch(0.99 0.005 85);
+
+  --secondary: var(--neutral-1);
+  --secondary-foreground: var(--ink);
+
+  --muted: var(--neutral-1);
+  --muted-foreground: var(--neutral-5);
+
+  /* Hover/selection surfaces are NEUTRAL - signal is reserved. */
+  --accent: var(--neutral-1);
+  --accent-foreground: var(--ink);
+
+  --destructive: oklch(0.58 0.22 27);
+  --destructive-foreground: oklch(0.98 0.01 20);
+
+  --border: var(--neutral-2);
+  --input: var(--neutral-2);
+  --ring: var(--signal);
+
+  --success: oklch(0.6 0.15 155);
+  --warning: oklch(0.72 0.15 75);
+
+  --chart-1: var(--signal);
+  --chart-2: oklch(0.6 0.12 220);
+  --chart-3: oklch(0.62 0.14 155);
+  --chart-4: oklch(0.72 0.15 75);
+  --chart-5: var(--neutral-4);
+}
+
+
+/* Dark mode removed (redesign 2026-09): the product is light-only, like its
+ * reference class (CloudConvert, iLovePDF). dark: utilities remain valid but
+ * never activate - html no longer receives the .dark class. */
+
+
+@theme inline {
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* ONE radius (spec phase 1): every box utility resolves to the technical
+     4px, so no component needs touching and none can drift. rounded-full is
+     intentionally untouched for circular controls and pills. */
+  --radius-sm: 4px;  /* badges, chips */
+  --radius-md: 6px;  /* buttons, inputs, controls */
+  --radius-lg: 8px;  /* cards, drop zones */
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
+
+  /* Raised, mobile-first type scale (spec minimums): body 17/1.6, small 15,
+     nothing readable below 15. Redefining the tokens upgrades every existing
+     text-* utility in place. */
+  --text-2xs: 0.75rem;   /* 12 - ad labels, fine print */
+  --text-2xs--line-height: 1.4;
+  --text-xs: 0.8125rem;  /* 13 - card sentences, meta */
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.875rem;   /* 14 - UI text, card names */
+  --text-sm--line-height: 1.5;
+  --text-base: 1rem;     /* 16 - body */
+  --text-base--line-height: 1.6;
+  --text-lg: 1.25rem;    /* 20 - section titles */
+  --text-lg--line-height: 1.4;
+  --text-xl: 1.5rem;     /* 24 - page titles */
+  --text-xl--line-height: 1.3;
+  --text-2xl: 2rem;      /* 32 - the ceiling; nothing renders larger */
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 1.25;
+  --text-4xl: 2rem;
+  --text-4xl--line-height: 1.25;
+  --text-5xl: 2rem;
+  --text-5xl--line-height: 1.25;
+  /* Two weights only: every medium/bold utility resolves to 600. */
+  --font-weight-medium: 600;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 600;
+  /* One shadow, menus and modals only. Cards use borders. */
+  --shadow-menu: 0 4px 16px oklch(0.19 0.012 240 / 0.1);
+
+  /* Motion presets used across the platform */
+  --animate-fade-up: fade-in 0.12s ease both;
+  --animate-fade-in: fade-in 0.12s ease both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+/* ── Compact density ─────────────────────────────────────────────────────────
+   One global lever: Tailwind v4 derives every spacing utility (p-*, gap-*,
+   h-*, size-*) from --spacing, so shrinking it ~14% tightens the whole UI
+   proportionally. Type sizes are deliberately untouched (readability).
+   Applied pre-paint by the inline script in app/layout.tsx; toggled by
+   components/layout/density-toggle.tsx via lib/density. */
+:root[data-density="compact"] {
+  --spacing: 0.215rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  /* Redesign 2026-09: body copy 16px/1.6; UI text 14; titles cap at 32. */
+  body {
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* NOTE: no `overflow-x: clip` on html/body. On Chromium, root-level `clip`
+       establishes a containing block for position:fixed descendants, which
+       trapped the portalled Browse mega-menu / dropdowns at the document top
+       (off-screen when scrolled). Sideways-scroll is instead clipped on the
+       app shell div in app/layout.tsx, which is NOT an ancestor of Radix
+       portals (those mount as direct children of body). */
+  }
+  /* Smooth scroll only when the user hasn't asked to reduce motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
+    /* Do NOT set `overflow-x: clip` here. `clip` establishes a containing block
+       for position:fixed descendants, which trapped the portalled Browse
+       mega-menu / dropdowns at the document top (off-screen when scrolled).
+       The viewport-level clip on <html> already prevents sideways scroll. */
+  }
+  /* Tailwind v4 Preflight drops the default `cursor: pointer` on buttons, which
+     makes custom <button> controls (format toggles, swatches, chips) look
+     non-clickable. Restore it for interactive controls; per-element Tailwind
+     `cursor-*` utilities still win over this base rule when a control needs a
+     different cursor. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  /* Accessible focus ring for keyboard users */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  ::selection {
+    @apply bg-primary/20;
+  }
+}
+
+/* Entrance reveal used for above-the-fold mounts (CSS replacement for
+   the removed framer-motion dependency on the LCP path). Only animates when the user hasn't asked
+   to reduce motion — otherwise content simply renders in place. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    /* End at `none` (not translateY(0)): the retained fill value then leaves
+       no transform → no permanent stacking context that could paint above
+       overlays like the search dropdown. */
+    to { opacity: 1; transform: none; }
+  }
+  .animate-rise {
+    /* fill-mode BACKWARDS (not both): `both` retains the final keyframe as a
+       computed identity matrix — still a transform, still a permanent stacking
+       context, which let hero rows paint OVER the search dropdown. `backwards`
+       covers the pre-delay gap, then reverts to no transform once finished. */
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  /* LCP-safe variant for the hero heading. It slides up but never drops to
+     opacity:0, so the largest-contentful element is PAINTED at the first frame
+     (even during the delay, via `backwards`) — the entrance no longer delays LCP. */
+  @keyframes rise-solid {
+    from { transform: translateY(12px); }
+    to { transform: none; }
+  }
+  .animate-rise-solid {
+    animation: rise-solid 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+}
+
+/* Navigation loader — an on-brand morphing "liquid blob" (ties to the SVG blob
+   studio) plus a shimmer sweep on the top progress bar. Kept outside the
+   reduced-motion guard so the loader still appears; the morph is calmed below. */
+@keyframes gigai-blob-morph {
+  0%, 100% { border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; transform: rotate(0deg) scale(1); }
+  50% { border-radius: 63% 37% 42% 58% / 56% 59% 41% 44%; transform: rotate(180deg) scale(1.08); }
+}
+@keyframes gigai-nav-shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+@keyframes gigai-nav-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes gigai-nav-pop { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+.gigai-blob-loader { animation: gigai-blob-morph 1.6s ease-in-out infinite; }
+.gigai-nav-shimmer { animation: gigai-nav-shimmer 1s ease-in-out infinite; }
+.gigai-nav-scrim { animation: gigai-nav-fade 0.2s ease-out both; }
+.gigai-nav-pop { animation: gigai-nav-pop 0.22s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .gigai-blob-loader { animation: gigai-blob-morph 3s ease-in-out infinite; }
+  .gigai-nav-shimmer { animation: none; }
+  .gigai-nav-pop { animation: gigai-nav-fade 0.2s ease-out both; }
+}
+
+/* Success moment — the done-state check pops in once (see
+   components/tool/result-success.tsx). Reduced motion gets a plain fade. */
+@keyframes gigai-pop {
+  from { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.08); }
+  to { opacity: 1; transform: scale(1); }
+}
+.gigai-pop { animation: gigai-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .gigai-pop { animation: gigai-nav-fade 0.2s ease-out both; }
+}
+
+@layer components {
+  /* Consistent max-width reading measure for content pages */
+  .prose-measure {
+    max-width: 68ch;
+  }
+  /* Subtle grid/dot background used on hero + section bands */
+  .bg-grid {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /*
+    ── Advertisement units ────────────────────────────────────────────────────
+    The wrapper reserves vertical space (min-height set inline per placement) to
+    avoid CLS, stays centered, and clips any overflow so an ad can never break
+    the page layout. If AdSense leaves the slot unfilled it collapses the <ins>
+    and only this subtle reserved box remains. Kept quiet in light + dark.
+  */
+  .ad-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-block: 1.5rem;
+    overflow: hidden;
+    text-align: center;
+  }
+  .ad-wrapper > .adsbygoogle {
+    display: block;
+    width: 100%;
+  }
+  /* Collapse the WHOLE box (label + reserved space) once AdSense has nothing to
+     show: `unfilled`, or no verdict at all after the fill timeout (ad blockers).
+     Before approval AdSense answers every unit with a sized, blank, white
+     iframe, so a hidden-but-reserved spacer still left white blocks on dark
+     pages. Driven by BaseAd's `data-ad-state`. */
+  .ad-wrapper[data-ad-state="unfilled"] {
+    display: none !important;
+  }
+  /* Same verdict read straight from AdSense's own attribute, so it holds even
+     before React state catches up. Deliberately a SEPARATE rule: a browser
+     without `:has()` drops the rule it appears in, and must not drop the one
+     above with it. */
+  .ad-wrapper:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
+    display: none !important;
+  }
+  /* Tiny, unobtrusive "Advertisements" tag above each unit (the only label text AdSense permits besides "Sponsored Links"). */
+  .ad-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    /* 11px + a nudge toward the foreground so this small label clears WCAG AA
+       (4.5:1) in BOTH themes — plain --muted-foreground was ~3.8:1 in light. */
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--muted-foreground), var(--foreground) 25%);
+    user-select: none;
+  }
+}
+
+@utility container-px {
+  padding-inline: 1.25rem;
+  @media (width >= 640px) { padding-inline: 2rem; }
+  @media (width >= 1024px) { padding-inline: 2.5rem; }
+}

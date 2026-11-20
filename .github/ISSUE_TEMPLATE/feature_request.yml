@@ -1,0 +1,31 @@
+name: Feature request
+description: An improvement to an existing tool, the site or the backend.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do, and what gets in the way today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Can it run in the browser?
+      options:
+        - "Yes"
+        - "No, it needs a server"
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered

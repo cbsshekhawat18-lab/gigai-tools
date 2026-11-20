@@ -1,0 +1,72 @@
+{
+ "common": {
+  "measuredOn": "2026-08-22",
+  "environment": "Chromium on an Apple-silicon MacBook Air, everything in-browser"
+ },
+ "tools": {
+  "image-compressor": {
+   "sample": "a 3.4 MB, 4000\u00d73000 test photograph (JPEG)",
+   "result": "3.4 MB \u2192 515 KB (85% smaller) in 2.7 seconds",
+   "inputBytes": 3448277,
+   "outputBytes": 526783,
+   "ms": 2655,
+   "note": "Default settings, MozJPEG encoder. No visible difference at 100% zoom on the sample."
+  },
+  "image-resizer": {
+   "sample": "the same 4000\u00d73000 photograph",
+   "result": "4000\u00d73000 \u2192 1600\u00d71200, 3.4 MB \u2192 292 KB, in 3.1 seconds",
+   "inputBytes": 3448277,
+   "outputBytes": 299110,
+   "ms": 3066,
+   "note": "Lanczos resampling via pica, with dimensions set to 1600 px wide."
+  },
+  "heic-to-jpg": {
+   "sample": "a 2.3 MB HEIC of the same photograph",
+   "result": "2.3 MB HEIC \u2192 2.4 MB JPG in 5.7 seconds",
+   "inputBytes": 2408931,
+   "outputBytes": 2499763,
+   "ms": 5660,
+   "note": "JPG is usually larger than HEIC at like-for-like quality - HEIC compresses better. Convert for compatibility, then compress if size matters."
+  },
+  "webp-converter": {
+   "sample": "the 3.4 MB test photograph",
+   "result": "3.4 MB JPEG \u2192 1.2 MB WebP (64% smaller) in 3.1 seconds",
+   "inputBytes": 3448277,
+   "outputBytes": 1226238,
+   "ms": 3147,
+   "note": "libwebp at default quality."
+  },
+  "png-to-jpg": {
+   "sample": "a 66 KB flat-colour PNG graphic",
+   "result": "66 KB PNG \u2192 624 KB JPG - larger, not smaller",
+   "inputBytes": 67378,
+   "outputBytes": 638890,
+   "ms": 2516,
+   "note": "Honest caveat: JPG is built for photographs. Flat graphics with sharp edges are already near-optimal as PNG, and converting them to JPG grows the file. Convert photos, keep graphics as PNG."
+  },
+  "compress-pdf": {
+   "sample": "a 6.6 MB, 2-page image PDF built from the test photograph",
+   "result": "6.6 MB \u2192 90 KB (99% smaller) in 2.2 seconds",
+   "inputBytes": 6897894,
+   "outputBytes": 91791,
+   "ms": 2182,
+   "note": "Pages are re-rendered and re-encoded with MozJPEG. The output is returned unchanged if compression can't beat the original. Text-first PDFs compress far less - they're already small."
+  },
+  "merge-pdf": {
+   "sample": "two copies of the 6.6 MB image PDF",
+   "result": "13.2 MB in \u2192 13.2 MB out (lossless) in 1.0 second",
+   "inputBytes": 13795788,
+   "outputBytes": 13795154,
+   "ms": 1003,
+   "note": "pdf-lib page copy: merging never re-encodes or degrades pages."
+  },
+  "audio-compressor": {
+   "sample": "a 10-second 44.1 kHz WAV music clip (1.7 MB)",
+   "result": "1.7 MB WAV \u2192 157 KB MP3 (91% smaller) in 0.8 seconds",
+   "inputBytes": 1764044,
+   "outputBytes": 160512,
+   "ms": 797,
+   "note": "lamejs MP3 encoding at the default bitrate, entirely in the browser."
+  }
+ }
+}

@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output (Next.js static export)
+.next/
+out/
+build/
+dist/
+worker/worker.bundle.mjs
+
+# Copied from node_modules on install (GPL, not committed): scripts/copy-ffmpeg.mjs
+public/ffmpeg/
+
+# Settings and secrets: only the example is committed
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime data written by the backend and worker
+data/
+backend/data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Logs and archives
+*.log
+npm-debug.log*
+*.zip
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Editors and OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/

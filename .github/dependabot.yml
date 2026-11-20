@@ -1,0 +1,37 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule: { interval: weekly, day: monday, time: "04:00", timezone: Asia/Kolkata }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: deps, include: scope }
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react-dom
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: npm
+    directory: "/worker"
+    schedule: { interval: weekly, day: monday, time: "04:00", timezone: Asia/Kolkata }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: deps, include: scope }
+    groups:
+      worker-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: pip
+    directory: "/backend"
+    schedule: { interval: weekly, day: monday, time: "04:00", timezone: Asia/Kolkata }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: deps, include: scope }
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: weekly, day: monday, time: "04:00", timezone: Asia/Kolkata }
+    commit-message: { prefix: ci }

@@ -1,0 +1,149 @@
+{
+  "comment": "Site Audit guidance corpus. Original paraphrased summaries with source links - never copied text. checkIds map chunks to finding ids deterministically; embeddings are added by scripts/embed-knowledge.mjs (runs on the dev machine, never on the server) into knowledge.embedded.json.",
+  "chunks": [
+    {
+      "id": "title-basics",
+      "checkIds": ["missing-title", "long-title", "short-title"],
+      "title": "Title tags that survive the results page",
+      "content": "Google rewrites titles it considers weak, and truncates around 580 pixels - roughly 55 to 60 characters. A good title leads with the page's distinct topic, reads as a promise the page keeps, and avoids repeating the site name on every page. One title per page, unique across the site.",
+      "sourceName": "Google Search Central - Title links",
+      "sourceUrl": "https://developers.google.com/search/docs/appearance/title-link"
+    },
+    {
+      "id": "meta-description",
+      "checkIds": ["missing-description", "long-description"],
+      "title": "Meta descriptions set the snippet, not the ranking",
+      "content": "Descriptions do not affect ranking directly, but they are the ad copy of the result: when missing or weak, search engines assemble a snippet from page text, often badly. Keep them under roughly 155 characters, specific to the page, and front-load the value. Every page gets its own.",
+      "sourceName": "Google Search Central - Snippets",
+      "sourceUrl": "https://developers.google.com/search/docs/appearance/snippet"
+    },
+    {
+      "id": "canonical",
+      "checkIds": ["missing-canonical"],
+      "title": "Canonical links consolidate duplicate signals",
+      "content": "When the same content answers on several URLs (tracking parameters, http vs https, trailing slashes), ranking signals split between them. A rel=canonical on every page - usually pointing at itself - tells crawlers which URL is the one to index and credit. It is a hint, not a directive, but a strong one.",
+      "sourceName": "Google Search Central - Canonicalization",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls"
+    },
+    {
+      "id": "open-graph",
+      "checkIds": ["incomplete-og", "missing-twitter-card"],
+      "title": "Open Graph controls how shares render",
+      "content": "og:title, og:description and og:image decide what a shared link looks like in chats and feeds; twitter:card selects the large-image layout on X. Without them platforms guess, often rendering a bare URL nobody clicks. The image should be 1200x630 and hosted on a stable URL.",
+      "sourceName": "The Open Graph protocol",
+      "sourceUrl": "https://ogp.me/"
+    },
+    {
+      "id": "structured-data",
+      "checkIds": ["no-structured-data", "broken-jsonld"],
+      "title": "JSON-LD is how machines read your page",
+      "content": "Structured data in JSON-LD is the format Google recommends for rich results and the format AI systems parse most reliably. A broken block is worse than none - it fails silently and takes eligible rich results with it. Validate after every change, match the @type to the real content, and never mark up content that is not visible on the page.",
+      "sourceName": "Google Search Central - Structured data guidelines",
+      "sourceUrl": "https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data"
+    },
+    {
+      "id": "schema-types",
+      "checkIds": ["no-structured-data"],
+      "title": "Choosing the right schema.org type",
+      "content": "schema.org defines the vocabulary: WebPage is the safe default, Article for editorial content, Product for things with offers, FAQPage for genuine question lists, HowTo for stepped instructions, Organization and WebSite once on the home page. Richer, accurate types earn richer results; wrong types earn manual actions.",
+      "sourceName": "schema.org",
+      "sourceUrl": "https://schema.org/docs/gs.html"
+    },
+    {
+      "id": "headings",
+      "checkIds": ["missing-h1", "multiple-h1", "heading-jump"],
+      "title": "Headings are the machine-readable outline",
+      "content": "One h1 stating the page topic, then h2/h3 in order without skipping levels. Crawlers, screen readers and AI summarizers all reconstruct the document from this outline; jumps and duplicate h1s blur what the page is about. Headings should describe sections, not decorate them.",
+      "sourceName": "Google Search Central - SEO Starter Guide",
+      "sourceUrl": "https://developers.google.com/search/docs/fundamentals/seo-starter-guide"
+    },
+    {
+      "id": "image-alt",
+      "checkIds": ["missing-alt"],
+      "title": "Alt text serves three consumers at once",
+      "content": "Alt text is how screen readers speak an image, how image search indexes it, and how AI systems understand it. Describe what the image shows in the page's context; leave alt empty (alt=\"\") only for purely decorative images so assistive tech skips them.",
+      "sourceName": "Google Search Central - Images best practices",
+      "sourceUrl": "https://developers.google.com/search/docs/appearance/google-images"
+    },
+    {
+      "id": "mobile-viewport",
+      "checkIds": ["missing-viewport"],
+      "title": "The viewport meta is the mobile baseline",
+      "content": "Google indexes the mobile version of pages first. Without a viewport meta the page renders desktop-wide on phones, fails mobile-friendliness, and loses ranking on mobile queries - which are most queries. width=device-width with initial-scale=1 is the standard declaration.",
+      "sourceName": "Google Search Central - Mobile site best practices",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing"
+    },
+    {
+      "id": "lang-attr",
+      "checkIds": ["missing-lang"],
+      "title": "Declare the page language",
+      "content": "The lang attribute on the html element tells screen readers which voice to use and helps search engines serve the page to the right language audience. Set it to the primary language of the visible content, for example lang=\"en\" or lang=\"hi\".",
+      "sourceName": "W3C - Language on the web",
+      "sourceUrl": "https://www.w3.org/International/questions/qa-html-language-declarations"
+    },
+    {
+      "id": "robots-txt",
+      "checkIds": ["missing-robots"],
+      "title": "robots.txt is the crawler contract",
+      "content": "robots.txt tells crawlers what they may fetch. A missing file means everything is fair game, which is usually fine - but an explicit file lets you protect admin paths, point at the sitemap, and set per-bot policy. It controls crawling, not indexing: blocked pages can still appear in results from external links.",
+      "sourceName": "Google Search Central - robots.txt introduction",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/robots/intro"
+    },
+    {
+      "id": "ai-crawlers",
+      "checkIds": ["ai-crawlers-blocked"],
+      "title": "AI crawlers decide whether AI answers can cite you",
+      "content": "GPTBot (OpenAI), ClaudeBot (Anthropic), PerplexityBot, Google-Extended (Gemini training) and CCBot (Common Crawl) each honor robots.txt. Blocking them keeps your content out of AI training and answers - a legitimate choice - but sites that want to be cited by AI assistants must allow the bots that feed those answers. The trade is traffic-from-citation versus content control; decide it deliberately per bot.",
+      "sourceName": "Google - Google-Extended documentation",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers"
+    },
+    {
+      "id": "sitemap",
+      "checkIds": ["missing-sitemap"],
+      "title": "Sitemaps make discovery independent of links",
+      "content": "A sitemap.xml lists the URLs you want crawled with optional lastmod dates. It matters most for new sites with few inbound links and large sites with deep pages. Keep lastmod honest - search engines learn to ignore sitemaps whose dates change on every deploy without content changes.",
+      "sourceName": "Google Search Central - Sitemaps",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview"
+    },
+    {
+      "id": "js-content",
+      "checkIds": ["js-dependent-content"],
+      "title": "Content that only exists after JavaScript is invisible to most machines",
+      "content": "Google renders JavaScript, but in a delayed second wave; most other crawlers and nearly all AI-answer fetchers read only the raw HTML. If the main content arrives via client-side rendering, those systems see an empty page. Server-side render or statically generate the content that must be found and cited.",
+      "sourceName": "Google Search Central - JavaScript SEO basics",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics"
+    },
+    {
+      "id": "citeable-content",
+      "checkIds": ["no-visible-dates"],
+      "title": "What makes content citeable by AI systems",
+      "content": "AI assistants prefer to cite pages that state facts plainly: visible dates, named authors, direct answers near the top, and self-contained sections a model can quote without losing meaning. Undated pages read as unverifiable; answer-shaped headings and short factual paragraphs are quoted most.",
+      "sourceName": "GigAI - GEO methodology",
+      "sourceUrl": "https://gigai.tools/category/geo-tools"
+    },
+    {
+      "id": "https",
+      "checkIds": ["not-https"],
+      "title": "HTTPS is the floor, not a bonus",
+      "content": "HTTPS has been a ranking signal for years and browsers mark plain-http pages as not secure, which drives users away before content loads. Serve everything over https and 301 the http origin to it.",
+      "sourceName": "Google Search Central - HTTPS as a ranking signal",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/https"
+    },
+    {
+      "id": "http-status",
+      "checkIds": ["page-status"],
+      "title": "Non-200 pages waste crawl and rank nothing",
+      "content": "Pages that answer 404, 500 or redirect chains spend crawl budget and accumulate no ranking. Fix the link that led there, restore the content, or 301 to the closest living page. Soft-404s - a 200 page that says not found - are treated as errors too.",
+      "sourceName": "Google Search Central - HTTP status codes",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/http-network-errors"
+    },
+    {
+      "id": "noindex",
+      "checkIds": ["noindexed"],
+      "title": "noindex removes pages deliberately",
+      "content": "A noindex robots meta keeps a page out of search while still letting users and crawlers reach it. Right for thin utility pages, wrong when left on a page you want found - audit noindex flags to confirm each one is intentional.",
+      "sourceName": "Google Search Central - Block search indexing",
+      "sourceUrl": "https://developers.google.com/search/docs/crawling-indexing/block-indexing"
+    }
+  ]
+}

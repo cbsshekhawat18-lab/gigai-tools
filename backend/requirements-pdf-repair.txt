@@ -1,0 +1,5 @@
+# app/pdf_repair (AGPL-3.0-or-later, see app/pdf_repair/LICENSE). Optional.
+# Install on top of requirements.txt, put the tesseract binary and its
+# language data on the PATH, and set PDF_REPAIR_ENABLED=true.
+-r requirements.txt
+pymupdf>=1.28

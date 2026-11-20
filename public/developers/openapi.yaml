@@ -1,0 +1,493 @@
+openapi: 3.1.0
+info:
+  title: GigAI Tools API
+  version: 1.0.0
+  description: |
+    Run GigAI's file tools from code. Free - 1,000 tasks a month, no card.
+
+    Base URL: `https://api.gigai.tools/v1`
+
+    Authenticate with an API key from https://gigai.tools/developers/dashboard:
+
+        Authorization: Bearer gk_live_...
+
+    `gk_test_` keys are sandbox keys: same behavior, nothing counts against
+    your quota, files are capped at 10 MB and kept at most 15 minutes.
+
+    A job is a small graph of named tasks: import tasks bring files in,
+    engine tasks transform them, an export task makes results downloadable.
+    Every listed tool is runnable today - this spec never promises an engine
+    that does not exist yet.
+
+    Privacy: file contents are never logged and never stored beyond the
+    retention you choose (default 1 hour, `retention_s: 0` = one download or
+    60 seconds). Deletion is verified and audited.
+  contact:
+    url: https://gigai.tools/developers
+servers:
+  - url: https://api.gigai.tools/v1
+security:
+  - apiKey: []
+
+paths:
+  /health:
+    get:
+      summary: Liveness check
+      security: []
+      responses:
+        "200":
+          description: Service is up.
+
+  /tools:
+    get:
+      summary: List runnable tools
+      description: |
+        The catalog only contains engines the worker can actually run.
+        Live today (36): add-page-numbers, blur-image, compress-image, convert-image, convert-subtitles, crop-image, csv-to-json, delete-pdf-pages, detect-pii, flip-image, format-json, generate-qr, grayscale-image, html-to-markdown, image-to-pdf, json-to-csv, json-to-yaml, markdown-to-html, merge-pdf, minify-css, minify-html, minify-js, ocr-pdf, optimize-svg, pdf-metadata, pdf-to-jpg, pdf-to-text, redact-pii, resize-image, rotate-image, rotate-pdf, split-pdf, strip-image-metadata, svg-to-png, watermark-pdf, yaml-to-json.
+      security: []
+      responses:
+        "200":
+          description: Tool list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tools:
+                    type: array
+                    items: { $ref: "#/components/schemas/Tool" }
+
+  /tools/{slug}:
+    get:
+      summary: One tool's contract
+      security: []
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Tool description with its options schema.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tool" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /jobs:
+    post:
+      summary: Create a job
+      description: |
+        Send a `tasks` object. Each key names a task; each task has an
+        `operation` (an import, a tool slug from /v1/tools, or an export)
+        plus that operation's fields. Engine and export tasks name their
+        inputs with `input`.
+
+        Send an `Idempotency-Key` header to make retries safe: the same key
+        returns the same job instead of running the work twice.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema: { type: string, maxLength: 200 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/JobRequest" }
+            example:
+              tag: invoice-batch-7
+              retention_s: 600
+              tasks:
+                in1: { operation: import/url, url: "https://example.com/a.pdf" }
+                in2: { operation: import/url, url: "https://example.com/b.pdf" }
+                merge: { operation: merge-pdf, input: [in1, in2] }
+                out: { operation: export/url, input: [merge] }
+      responses:
+        "201":
+          description: Job accepted and queued.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+        "200":
+          description: Idempotency-Key replay - the job created earlier.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "409":
+          description: "`concurrent_limit` - too many jobs running."
+        "413":
+          description: "`file_too_large` - an import exceeds the plan's byte limit."
+        "429":
+          description: "`rate_limited` or `quota_exceeded`."
+    get:
+      summary: List recent jobs
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [waiting, processing, finished, error, cancelled] } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        "200":
+          description: Newest first.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: array
+                    items: { $ref: "#/components/schemas/Job" }
+
+  /jobs/{id}:
+    get:
+      summary: Get a job
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: Current state, including export URLs once finished.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      summary: Cancel a job and purge its files
+      description: Outstanding tasks are cancelled and every file the job holds is deleted immediately, with deletion verified.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: The cancelled job.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /jobs/{id}/wait:
+    get:
+      summary: Long-poll until the job settles
+      description: Returns as soon as the job reaches finished/error/cancelled, or after ~55 seconds with its current state. Poll it in a loop instead of hammering GET /jobs/{id}.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: The job, final or current.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /tasks/{id}:
+    get:
+      summary: Get one task
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: The task.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /files/{id}:
+    get:
+      summary: File metadata and a fresh download URL
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: Metadata. `url` is present until the file is deleted.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FileMeta" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      summary: Delete a file now
+      description: Does not wait for retention. Deletion is verified and the result says so.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: "`{id, deleted: true, verified: bool}`"
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /files/{id}/download:
+    get:
+      summary: Download (signed URL)
+      description: >-
+        The `url` values in job and file responses point here. The signature
+        (`e`, `s`) is the auth - no header needed, so the link works in a
+        browser too. With `retention_s: 0` the first successful download
+        deletes the file.
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: e, in: query, required: true, schema: { type: integer }, description: "Expiry (unix epoch)" }
+        - { name: s, in: query, required: true, schema: { type: string }, description: "HMAC signature" }
+      responses:
+        "200":
+          description: The file bytes.
+        "403":
+          description: "`bad_signature` - link invalid or expired."
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /webhooks:
+    get:
+      summary: List webhook endpoints
+      responses:
+        "200":
+          description: Registered endpoints (secrets never included).
+    post:
+      summary: Register a webhook endpoint
+      description: |
+        The response includes the signing `secret` exactly once. Each delivery
+        carries `GigAI-Signature: t=<epoch>,v1=<hex>` where
+        `v1 = HMAC-SHA256(secret, "<t>." + body)`. Verify by recomputing and
+        reject timestamps older than a few minutes. Failed deliveries retry
+        5 times over ~10 hours.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url: { type: string, description: "https only" }
+                events:
+                  type: array
+                  items: { type: string, enum: [job.finished, job.failed] }
+      responses:
+        "201":
+          description: Endpoint created, secret shown once.
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "409":
+          description: "`webhook_limit` - plan cap reached."
+
+  /webhooks/{id}:
+    delete:
+      summary: Remove a webhook endpoint
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200":
+          description: Disabled.
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /agent/plan:
+    post:
+      summary: Plan a tool pipeline from a goal sentence
+      description: |
+        Text-only agent planning: a goal plus file METADATA (name, type,
+        size, dimensions - never contents) comes back as ordered steps
+        naming catalog tools with ready-to-use options. Validate the plan
+        against the live catalog before running it. 10 plans per day per
+        account; 503 planning_unavailable is the honest answer when the
+        free-tier model chain has no capacity - plan locally instead.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [goal]
+              properties:
+                goal: { type: string, maxLength: 500 }
+                files:
+                  type: array
+                  maxItems: 10
+                  items:
+                    type: object
+                    properties:
+                      name: { type: string }
+                      type: { type: string }
+                      size: { type: integer }
+                      width: { type: integer }
+                      height: { type: integer }
+                catalogue:
+                  type: array
+                  description: Optional tool list to plan against (defaults to the server catalog).
+                  items: { type: object }
+      responses:
+        "200":
+          description: A plan.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan:
+                    type: object
+                    properties:
+                      steps:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            toolId: { type: string }
+                            input: { type: object }
+                            why: { type: string }
+                  provider: { type: string }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "429":
+          description: Daily planning limit reached (agent_quota).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "503":
+          description: No free-tier planning capacity (planning_unavailable).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /agent/learn:
+    post:
+      summary: Store one opt-in learning record
+      description: |
+        Explicit opt-in only (opt_in must be literally true). Stores the
+        goal, the plan, per-step outcomes and whether the user edited the
+        plan - never file names, contents or results; records are
+        metadata-sized and refused otherwise. The answer echoes exactly
+        what was stored.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [opt_in, goal, plan, outcomes]
+              properties:
+                opt_in: { type: boolean }
+                goal: { type: string, maxLength: 500 }
+                plan: { type: object }
+                outcomes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      toolId: { type: string }
+                      ok: { type: boolean }
+                      corrected: { type: boolean }
+                edited: { type: boolean }
+      responses:
+        "201":
+          description: Stored; the body echoes the record.
+        "400": { $ref: "#/components/responses/BadRequest" }
+
+components:
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      description: "API key from the dashboard: gk_live_... (or gk_test_... for sandbox)."
+
+  responses:
+    BadRequest:
+      description: Validation failed. The error names the task or field in `param`.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: Nothing with that id on this account.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+            doc_url: { type: string }
+            param: { type: string }
+
+    Tool:
+      type: object
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        category: { type: string }
+        description: { type: string }
+        input_formats: { type: array, items: { type: string } }
+        output_formats: { type: array, items: { type: string } }
+        multi_input: { type: boolean }
+        max_input_bytes: { type: integer }
+        options_schema:
+          type: object
+          description: JSON Schema for the task options this tool accepts.
+
+    JobRequest:
+      type: object
+      required: [tasks]
+      properties:
+        tag: { type: string, maxLength: 128, description: "Your own label, echoed back." }
+        retention_s:
+          type: integer
+          minimum: 0
+          maximum: 86400
+          default: 3600
+          description: "How long result files are kept. 0 = one download or 60 seconds."
+        tasks:
+          type: object
+          description: |
+            Task name -> task. Operations: `import/url` (`url`),
+            `import/base64` (`file`, `filename`), any tool slug from /v1/tools
+            (`input` + the tool's options), `export/url` (`input`).
+          additionalProperties:
+            type: object
+            required: [operation]
+            properties:
+              operation: { type: string }
+              input:
+                oneOf:
+                  - { type: string }
+                  - { type: array, items: { type: string } }
+
+    Job:
+      type: object
+      properties:
+        id: { type: string }
+        tag: { type: [string, "null"] }
+        status: { type: string, enum: [waiting, processing, finished, error, cancelled] }
+        retention_s: { type: integer }
+        sandbox: { type: boolean }
+        created_at: { type: string, format: date-time }
+        finished_at: { type: [string, "null"], format: date-time }
+        tasks:
+          type: array
+          items: { $ref: "#/components/schemas/Task" }
+
+    Task:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        operation: { type: string }
+        status: { type: string, enum: [waiting, processing, finished, error, cancelled] }
+        input: { type: array, items: { type: string } }
+        duration_ms: { type: integer }
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+        result:
+          type: object
+          description: Present on finished export tasks.
+          properties:
+            files:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: string }
+                  filename: { type: string }
+                  size: { type: integer }
+                  url: { type: string }
+
+    FileMeta:
+      type: object
+      properties:
+        id: { type: string }
+        filename: { type: string }
+        size: { type: integer }
+        mime: { type: [string, "null"] }
+        job_id: { type: [string, "null"] }
+        expires_at: { type: string, format: date-time }
+        deleted: { type: boolean }
+        url: { type: string }

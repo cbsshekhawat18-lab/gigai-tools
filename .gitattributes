@@ -1,0 +1,5 @@
+* text=auto eol=lf
+docs/tools/*.md linguist-generated=true
+lib/icons.generated.ts linguist-generated=true
+public/pdfjs/** linguist-vendored=true
+lib/vendor/** linguist-vendored=true
