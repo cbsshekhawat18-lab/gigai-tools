@@ -2,7 +2,7 @@
 # The lower bounds are the versions the live site runs.
 
 # Web framework, ASGI server, settings
-fastapi>=0.141,<1.0
+fastapi>=0.163.1,<1.0
 uvicorn[standard]>=0.52,<1.0
 pydantic>=2.13,<3.0
 pydantic-settings>=2.15,<3.0
