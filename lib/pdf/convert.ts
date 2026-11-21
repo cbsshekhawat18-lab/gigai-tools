@@ -177,7 +177,7 @@ export async function pdfToImages(
     }
     return out;
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 
@@ -283,6 +283,6 @@ export async function compressPdf(
     }
     return namedBlob(name, compressedBlob);
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }

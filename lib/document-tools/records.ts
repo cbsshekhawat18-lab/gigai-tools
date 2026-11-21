@@ -264,7 +264,7 @@ export async function pdfToRecords(
       }
       return pagesToRecords(pages);
     } finally {
-      await doc.destroy();
+      await doc.loadingTask.destroy();
     }
   } catch (err) {
     return fail(message(err));

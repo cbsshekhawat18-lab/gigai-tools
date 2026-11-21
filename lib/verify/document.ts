@@ -123,7 +123,7 @@ export async function analysePdf(file: File): Promise<PdfForensics> {
       metaStrings,
     };
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 

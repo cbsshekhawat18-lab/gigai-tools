@@ -291,7 +291,7 @@ function SignedPageCanvas({
             setImgUrl(url);
           }
         } finally {
-          await doc.destroy();
+          await doc.loadingTask.destroy();
         }
       } finally {
         if (!cancelled) setRendering(false);
@@ -460,7 +460,7 @@ export default function DocumentSignatureTool({ tool }: { tool: WorkspaceToolDat
       try {
         setPageCount(doc.numPages);
       } finally {
-        await doc.destroy();
+        await doc.loadingTask.destroy();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't open that PDF.");
@@ -520,7 +520,7 @@ export default function DocumentSignatureTool({ tool }: { tool: WorkspaceToolDat
         const vp = p.getViewport({ scale: 1 });
         pageAspect = vp.height / vp.width;
       } finally {
-        await doc.destroy();
+        await doc.loadingTask.destroy();
       }
       const hFrac = placement.wFrac * signature.aspect / pageAspect;
       const yBottom = Math.max(0, 1 - placement.yFrac - hFrac);

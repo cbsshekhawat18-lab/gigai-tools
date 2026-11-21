@@ -146,7 +146,7 @@ export async function ocrPdf(input: PdfInput, opts: OcrOptions = {}): Promise<Oc
     }
   } finally {
     await worker.terminate();
-    await srcDoc.destroy();
+    await srcDoc.loadingTask.destroy();
   }
 
   const base = input.name.replace(/\.pdf$/i, "");

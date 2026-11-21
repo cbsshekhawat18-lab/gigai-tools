@@ -187,7 +187,7 @@ export async function pdfToText(
       }
       return ok(pages.join(sep).trim());
     } finally {
-      await doc.destroy();
+      await doc.loadingTask.destroy();
     }
   } catch (err) {
     return fail(message(err));
@@ -231,7 +231,7 @@ ${sections.join("\n")}
 </html>`;
       return ok(out);
     } finally {
-      await doc.destroy();
+      await doc.loadingTask.destroy();
     }
   } catch (err) {
     return fail(message(err));

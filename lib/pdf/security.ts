@@ -89,7 +89,7 @@ export async function unlockPdf(input: PdfInput, password: string): Promise<Name
   // Validate the password up front with pdf.js so we can give a precise error
   // (openPdfDocument already normalises "incorrect password" messages).
   const probe = await openPdfDocument(input.file, pwd);
-  await probe.destroy();
+  await probe.loadingTask.destroy();
 
   // Load WITH the password (real decryption in @cantoo/pdf-lib), then re-save
   // without encryption. copyPages into a fresh doc guarantees no residual
@@ -123,7 +123,7 @@ export async function unlockPdf(input: PdfInput, password: string): Promise<Name
 export async function isEncrypted(input: PdfInput): Promise<boolean> {
   try {
     const doc = await openPdfDocument(input.file);
-    await doc.destroy();
+    await doc.loadingTask.destroy();
     return false;
   } catch (err) {
     return /password/i.test((err as Error).message);

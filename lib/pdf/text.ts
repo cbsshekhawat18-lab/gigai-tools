@@ -154,7 +154,7 @@ export async function extractTextRuns(
       page.cleanup();
     }
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 

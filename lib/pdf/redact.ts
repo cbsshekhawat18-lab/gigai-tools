@@ -132,7 +132,7 @@ export async function redactPdf(
         page_.cleanup();
       }
     } finally {
-      await doc.destroy();
+      await doc.loadingTask.destroy();
     }
 
     opts.onProgress?.(1, "Writing the redacted file");

@@ -81,7 +81,7 @@ async function convertInBrowser(file: File): Promise<Blob> {
     const blob = await Packer.toBlob(wordDoc);
     return blob;
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 

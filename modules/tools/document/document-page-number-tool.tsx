@@ -132,7 +132,7 @@ export default function DocumentPageNumberTool({ tool: _tool }: { tool: Workspac
             const url = canvas.toDataURL("image/png");
             setPreviewUrl(url);
           } finally {
-            await doc.destroy();
+            await doc.loadingTask.destroy();
           }
         } catch (err) {
           if (!cancelled && runIdRef.current === runId) {
@@ -162,7 +162,7 @@ export default function DocumentPageNumberTool({ tool: _tool }: { tool: Workspac
     try {
       const doc = await openPdfDocument(detected.file);
       setPageCount(doc.numPages);
-      await doc.destroy();
+      await doc.loadingTask.destroy();
     } catch {
       setPageCount(0);
     }

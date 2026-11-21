@@ -546,7 +546,7 @@ async function scanPdf(file: File, opts: Required<Pick<ScanOptions, "maxPages">>
       });
     }
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 
   base.findings = found.list();

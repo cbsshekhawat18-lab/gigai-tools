@@ -49,7 +49,7 @@ vi.mock("@/lib/pdf/core", () => ({
       getTextContent: async () => ({ items: fakeItems() }),
       cleanup: () => {},
     }),
-    destroy: async () => {},
+    loadingTask: { destroy: async () => {} },
   }),
 }));
 

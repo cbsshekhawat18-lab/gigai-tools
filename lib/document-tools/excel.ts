@@ -185,7 +185,7 @@ export async function pdfToExcelRows(
       }
       return ok(normaliseColumns(allRows));
     } finally {
-      await doc.destroy();
+      await doc.loadingTask.destroy();
     }
   } catch (err) {
     return fail(message(err));

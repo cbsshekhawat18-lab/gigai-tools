@@ -2157,7 +2157,7 @@ async function renderPreviews(file: File): Promise<RenderedPage[]> {
     }
     return out;
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 

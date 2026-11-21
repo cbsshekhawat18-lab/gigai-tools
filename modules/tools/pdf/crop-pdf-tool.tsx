@@ -172,7 +172,7 @@ function CropPreview({
         url = URL.createObjectURL(blob);
         setSrc(url);
       } finally {
-        await doc.destroy();
+        await doc.loadingTask.destroy();
       }
     })();
 

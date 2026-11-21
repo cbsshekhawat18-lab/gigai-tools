@@ -226,7 +226,7 @@ export const engines = {
       const content = await (await doc.getPage(p)).getTextContent();
       pages.push(content.items.map((it) => it.str).join(" ").replace(/\s+/g, " ").trim());
     }
-    await doc.destroy();
+    await doc.loadingTask.destroy();
     return [{ filename: outName(inputs[0], "txt"), mime: "text/plain",
               data: Buffer.from(pages.join("\n\n"), "utf8") }];
   },
@@ -437,7 +437,7 @@ export const engines = {
         data: canvas.toBuffer(format === "png" ? "image/png" : "image/jpeg"),
       });
     }
-    await doc.destroy();
+    await doc.loadingTask.destroy();
     return outputs;
   },
 

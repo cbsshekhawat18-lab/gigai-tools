@@ -210,7 +210,7 @@ function PdfPreview({ file, height }: { file: File; height: number }) {
         }
       } finally {
         if (!cancelled) setLoading(false);
-        await doc?.destroy();
+        await doc?.loadingTask.destroy();
       }
     })();
     return () => {

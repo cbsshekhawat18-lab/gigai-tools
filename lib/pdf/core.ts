@@ -134,7 +134,7 @@ export async function getPageCount(file: Blob, password?: string): Promise<numbe
   try {
     return doc.numPages;
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 
@@ -159,7 +159,7 @@ export async function renderPageToCanvas(
     const page = await doc.getPage(pageNumber);
     return await pageToCanvas(page, scale);
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 
@@ -209,7 +209,7 @@ export async function renderThumbnails(
     }
     return thumbs;
   } finally {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   }
 }
 
